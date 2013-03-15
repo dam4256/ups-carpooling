@@ -1,0 +1,8 @@
+<Teacher xmnls="http://ups.fr/carpooling/schemas">
+    <LastName>Doe</LastName>
+    <FirstName>John</FirstName>
+    <UPSMail>john.doe@univ-tlse3.fr</UPSMail>
+    <Address>118 route de Narbonne</Address>
+    <ZipCode>31062</ZipCode>
+    <Town>Toulouse</Town>
+</Teacher>

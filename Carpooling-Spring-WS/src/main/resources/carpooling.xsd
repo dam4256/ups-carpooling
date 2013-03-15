@@ -1,0 +1,22 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+        xmlns:cp="http://ups.fr/carpooling/schemas"
+        elementFormDefault="qualified"
+        targetNamespace="http://ups.fr/carpooling/schemas">
+    <xs:element name="RegistrationRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="Teacher" type="cp:TeacherType"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="TeacherType">
+        <xs:sequence>
+            <xs:element name="LastName" type="xs:string"/>
+		    <xs:element name="FirstName" type="xs:string"/>
+		    <xs:element name="UPSMail" type="xs:string"/>
+		    <xs:element name="Address" type="xs:string"/>
+		    <xs:element name="ZipCode" type="xs:integer"/>
+		    <xs:element name="Town" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>
