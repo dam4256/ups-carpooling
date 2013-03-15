@@ -1,0 +1,13 @@
+<RegistrationResponse xmnls="http://ups.fr/carpooling/schemas"
+        xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+        xs:schemaLocation="http://ups.fr/carpoolin/schemas Registration.xsd"
+        LastName="Doe"
+        FirstName="John"
+        UPSMail="john.doe@univ-tlse3.fr"
+        Address="118 route de Narbonne"
+        ZipCode="31062"
+        Town="Toulouse">
+    <Result>KO</Result>
+    <Code>100</Code>
+    <Error>Adresse email déjà utilisée</Error>
+</RegistrationResponse>
