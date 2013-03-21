@@ -1,7 +1,7 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-        xmlns:reg="http://ups.fr/carpooling/schemas"
+        xmlns:reg="http://ups/fr/carpooling/schemas"
         elementFormDefault="qualified"
-        targetNamespace="http://ups.fr/carpooling/schemas">
+        targetNamespace="http://ups/fr/carpooling/schemas">
     <xs:element name="RegistrationRequest" type="reg:RegistrationRequestType"/>
     <xs:element name="RegistrationResponse" type="reg:RegistrationResponseType"/>
     <xs:complexType name="RegistrationRequestType">

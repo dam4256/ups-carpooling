@@ -1,6 +1,6 @@
-<RegistrationRequest xmlns="http://ups.fr/carpooling/schemas"
+<RegistrationRequest xmlns="http://ups/fr/carpooling/schemas"
         xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-        xs:schemaLocation="http://ups.fr/carpooling/schemas Registration.xsd">
+        xs:schemaLocation="http://ups/fr/carpooling/schemas Registration.xsd">
     <LastName>Doe</LastName>
 	<FirstName>John</FirstName>
 	<UPSMail>john.doe@univ-tlse3.fr</UPSMail>
