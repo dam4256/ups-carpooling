@@ -5,8 +5,9 @@ public class RegistrationServiceImpl implements RegistrationService {
     private String result;
     private Integer code;
     private String error;
-    
-    public void register(String name, String mail, String address, int zip, String town) {
+
+    public void register(String lastName, String firstName, String mail,
+            String address, int zip, String town) {
         // result = ...
         // code = ...
         // error = ...
