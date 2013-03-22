@@ -19,6 +19,9 @@ public class RegistrationServiceImpl implements RegistrationService {
     private Integer code;
     private String error;
 
+    public void register(String lastName, String firstName, String mail,
+            String address, int zip, String town) {
+
     /**
      *
      * @param name
