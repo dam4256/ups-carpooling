@@ -19,19 +19,18 @@ public class RegistrationServiceImpl implements RegistrationService {
     private Integer code;
     private String error;
 
-    public void register(String lastName, String firstName, String mail,
-            String address, int zip, String town) {
+
 
     /**
      *
-     * @param name
-     * @param fname
+     * @param lastName
+     * @param firstName
      * @param mail
      * @param address
      * @param zip
      * @param town
      */
-    public void register(String name, String fname , String mail, String address, int zip, String town) {
+    public void register(String lastName, String firstName , String mail, String address, int zip, String town) {
         CouchDbClient dbClient = new CouchDbClient();
 
         //Vérification des contraintes de validité
@@ -78,7 +77,7 @@ public class RegistrationServiceImpl implements RegistrationService {
                 return;
             }
         //Toutes les contraintes sont vérifiées maintenant on procède à l'enregistrement
-        Utilisateur user = new Utilisateur(name,fname,mail,address,zip,town);
+        Utilisateur user = new Utilisateur(lastName,firstName,mail,address,zip,town);
         Response response = dbClient.save(user);
         if(response.getId()!=null)
         {
