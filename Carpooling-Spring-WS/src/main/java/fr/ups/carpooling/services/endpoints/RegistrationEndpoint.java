@@ -1,5 +1,6 @@
 package fr.ups.carpooling.services.endpoints;
 
+import fr.ups.carpooling.services.RegistrationServiceImpl;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.Namespace;
@@ -22,10 +23,10 @@ public class RegistrationEndpoint {
     private XPath zipExpression;
     private XPath townExpression;
     
-    private RegistrationService registrationService;
+    private RegistrationServiceImpl registrationService;
     
-    @Autowired
-    public RegistrationEndpoint(RegistrationService registrationService)
+    //@Autowired
+    public RegistrationEndpoint(RegistrationServiceImpl registrationService)
             throws JDOMException {
         this.registrationService = registrationService;
         
