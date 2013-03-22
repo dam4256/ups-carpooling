@@ -36,15 +36,15 @@ public class RegistrationService {
         CouchDbClient dbClient = new CouchDbClient();
 
 // CRUD API
-        Foo foo = new Foo(name,mail,address,zip,town);
-        Foo foo2 = new Foo(name,mail,"15 avenue du colonel roche ",31400,"Toulouse");
+Utilisateur foo = new Utilisateur(name,"ddsfsd", mail,address,zip,town);
+        Utilisateur foo2 = new Utilisateur(name,"vqvdsvd",mail,"15 avenue du colonel roche ",31400,"Toulouse");
         Response response = dbClient.save(foo);
-        foo = dbClient.find(Foo.class, response.getId());
+        foo = dbClient.find(Utilisateur.class, response.getId());
         System.out.println(foo.toString());
         View v =dbClient.view("application/viewmail");
         v.includeDocs(true);
         v.key(mail);
-        List<Foo> res =v.query(Foo.class);
+        List<Utilisateur> res =v.query(Utilisateur.class);
         System.out.println(res.size()+" " +res.toString());
         String adresse="http://nominatim.openstreetmap.org/search/";
         adresse+=foo2.getAddress()+" "+foo2.getZip()+" "+foo2.getTown();
@@ -59,14 +59,14 @@ public class RegistrationService {
             foo2.setLongitude(osmNode.getLon());
         }
         Response response2 = dbClient.save(foo2);
-        foo2 = dbClient.find(Foo.class, response2.getId());
+        foo2 = dbClient.find(Utilisateur.class, response2.getId());
         System.out.println(foo2.toString());
         View vv =dbClient.view("application/viewusers");
         vv.includeDocs(true);
-        List<Foo> ress = vv.query(Foo.class);
+        List<Utilisateur> ress = vv.query(Utilisateur.class);
         System.out.println(ress.size()+" " +ress.toString());
-        List<Foo> voisins = new ArrayList<Foo>();
-        for(Foo f : ress)
+        List<Utilisateur> voisins = new ArrayList<Utilisateur>();
+        for(Utilisateur f : ress)
         {
             if(foo2.inrange(f,25.0) && (!f.equals(foo2)))
             {
