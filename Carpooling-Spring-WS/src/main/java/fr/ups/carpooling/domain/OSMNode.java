@@ -1,4 +1,4 @@
-package fr.ups.carpooling.ws;
+package fr.ups.carpooling.domain;
 
 import java.util.Map;
 

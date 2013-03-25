@@ -1,4 +1,4 @@
-package fr.ups.carpooling.ws;
+package fr.ups.carpooling.domain;
 
 /**
  * Created with IntelliJ IDEA.
@@ -24,15 +24,10 @@ package fr.ups.carpooling.ws;
  *
  */
 
-import java.io.IOException;
-
-
-
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.Authenticator;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -48,12 +43,12 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-//import org.osm.lights.upload.BasicAuthenticator;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+//import org.osm.lights.upload.BasicAuthenticator;
 
 /**
  *

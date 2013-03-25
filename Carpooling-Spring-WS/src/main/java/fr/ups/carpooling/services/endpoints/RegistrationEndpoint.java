@@ -1,6 +1,5 @@
 package fr.ups.carpooling.services.endpoints;
 
-import fr.ups.carpooling.services.RegistrationServiceImpl;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.Namespace;
@@ -10,6 +9,7 @@ import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 
+import fr.ups.carpooling.domain.Teacher;
 import fr.ups.carpooling.services.RegistrationService;
 
 @Endpoint
@@ -24,10 +24,10 @@ public class RegistrationEndpoint {
     private XPath zipExpression;
     private XPath townExpression;
 
-    private RegistrationServiceImpl registrationService;
+    private RegistrationService registrationService;
 
-    //@Autowired
-    public RegistrationEndpoint(RegistrationServiceImpl registrationService)
+    @Autowired
+    public RegistrationEndpoint(RegistrationService registrationService)
             throws JDOMException {
         this.registrationService = registrationService;
 
@@ -65,27 +65,12 @@ public class RegistrationEndpoint {
         int zip = Integer.parseInt(zipExpression.valueOf(registrationRequest));
         String town = townExpression.valueOf(registrationRequest);
 
-        // Call the service to register the teacher.
-        registrationService.register(lastName, firstName, mail, address, zip,
+        // Create the teacher in search of a registration.
+        Teacher teacher = new Teacher(lastName, firstName, mail, address, zip,
                 town);
 
-        // Create the response.
-        Element response = new Element("RegistrationResponse", namespace);
-
-        Element result = new Element("Result", namespace);
-        result.setText(registrationService.getResult());
-        response.addContent(result);
-
-        if (result.equals("KO")) {
-            Element code = new Element("Code", namespace);
-            code.setText(String.valueOf(registrationService.getCode()));
-            response.addContent(code);
-
-            Element error = new Element("Error", namespace);
-            error.setText(registrationService.getError());
-            response.addContent(error);
-        }
-
+        // Call the service to register the teacher and return the response.
+        Element response = registrationService.register(teacher);
         return response;
     }
 

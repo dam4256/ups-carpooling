@@ -1,14 +1,11 @@
 package fr.ups.carpooling.services;
 
+import org.jdom.Element;
+
+import fr.ups.carpooling.domain.Teacher;
+
 public interface RegistrationService {
 
-    void register(String lastName, String firstName, String mail,
-            String address, int zip, String town);
-
-    String getResult();
-
-    Integer getCode();
-
-    String getError();
+    Element register(Teacher teacher);
 
 }

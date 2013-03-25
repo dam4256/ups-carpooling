@@ -9,5 +9,5 @@
         Town="Toulouse">
     <Result>KO</Result>
     <Code>100</Code>
-    <Error>Adresse email déjà utilisée</Error>
+    <Error>Adresse email deja utilisee</Error>
 </RegistrationResponse>

@@ -1,4 +1,4 @@
-package fr.ups.carpooling.ws;
+package fr.ups.carpooling.domain;
 
 /**
  * Created with IntelliJ IDEA.
@@ -7,7 +7,7 @@ package fr.ups.carpooling.ws;
  * Time: 14:50
  * To change this template use File | Settings | File Templates.
  */
-public class Utilisateur {
+public class Teacher {
     public String _id;
     private String name;
     private String fname;
@@ -18,7 +18,7 @@ public class Utilisateur {
     private String latitude = "0";
     private String longitude = "0";
 
-    public Utilisateur(String name, String fname, String mail, String address, int zip, String town) {
+    public Teacher(String name, String fname, String mail, String address, int zip, String town) {
         this.name = name;
         this.fname= fname;
         this.mail = mail;
@@ -107,7 +107,7 @@ public class Utilisateur {
 
 
 
-    public Boolean inrange(Utilisateur voisin,Double range)
+    public Boolean inrange(Teacher voisin,Double range)
     {
         Double dist =this.distance(Double.valueOf(voisin.getLatitude()), Double.valueOf(voisin.getLongitude()));
         System.out.println(dist);
@@ -116,9 +116,9 @@ public class Utilisateur {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj instanceof Utilisateur)
+        if(obj instanceof Teacher)
         {
-            return this._id.equals(((Utilisateur) obj)._id);
+            return this._id.equals(((Teacher) obj)._id);
         }
         else
         {
