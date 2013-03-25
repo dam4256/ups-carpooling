@@ -3,25 +3,19 @@ package fr.ups.carpooling.domain;
 import java.util.Map;
 
 /**
- * Created with IntelliJ IDEA.
- * User: menestrel
- * Date: 21/03/13
- * Time: 14:45
- * To change this template use File | Settings | File Templates.
+ * @author Kevin ANATOLE
+ * @author Damien ARONDEL
  */
 public class OSMNode {
 
     private String id;
-
     private String lat;
-
     private String lon;
-
     private final Map<String, String> tags;
-
     private String version;
 
-    public OSMNode(String id, String latitude, String longitude,String version, Map<String,String>tags) {
+    public OSMNode(String id, String latitude, String longitude,
+            String version, Map<String, String> tags) {
         this.version = version;
         this.tags = tags;
         this.lon = longitude;
@@ -60,6 +54,5 @@ public class OSMNode {
     public void setVersion(String version) {
         this.version = version;
     }
-
 
 }

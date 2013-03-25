@@ -12,12 +12,11 @@ import org.lightcouch.Response;
 import org.lightcouch.View;
 import org.xml.sax.SAXException;
 
+import fr.ups.carpooling.domain.constants.Constants;
+
 /**
- * Created with IntelliJ IDEA.
- * User: menestrel
- * Date: 18/03/13
- * Time: 17:56
- * To change this template use File | Settings | File Templates.
+ * @author Kevin ANATOLE
+ * @author Damien ARONDEL
  */
 public class RegistrationService {
 
@@ -36,9 +35,9 @@ Teacher foo = new Teacher(name,"ddsfsd", mail,address,zip,town);
         v.key(mail);
         List<Teacher> res =v.query(Teacher.class);
         System.out.println(res.size()+" " +res.toString());
-        String adresse="http://nominatim.openstreetmap.org/search/";
+        String adresse=Constants.OPENSTREETMAP_URL;
         adresse+=foo2.getAddress()+" "+foo2.getZip()+" "+foo2.getTown();
-        adresse+="?format=xml&addressdetails=1";
+        adresse+=Constants.OPENSTREETMAP_ENDING;
         URL osm = null;
         System.out.println(adresse);
         List<OSMNode> osmNodesInVicinity =OSMWrapperAPI.getNodes(OSMWrapperAPI.getXMLFile(adresse));
