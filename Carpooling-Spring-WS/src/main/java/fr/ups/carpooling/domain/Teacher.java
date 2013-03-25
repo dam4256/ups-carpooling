@@ -1,30 +1,29 @@
 package fr.ups.carpooling.domain;
 
 /**
- * Created with IntelliJ IDEA.
- * User: menestrel
- * Date: 19/03/13
- * Time: 14:50
- * To change this template use File | Settings | File Templates.
+ * @author Kevin ANATOLE
+ * @author Damien ARONDEL
  */
 public class Teacher {
-    public String _id;
-    private String name;
-    private String fname;
+
+    private String id;
+    private String lastName;
+    private String firstName;
     private String mail;
     private String address;
-    private int zip;
-    private String Town;
+    private Integer zip;
+    private String town;
     private String latitude = "0";
     private String longitude = "0";
 
-    public Teacher(String name, String fname, String mail, String address, int zip, String town) {
-        this.name = name;
-        this.fname= fname;
+    public Teacher(String lastName, String firstName, String mail,
+            String address, int zip, String town) {
+        this.lastName = lastName;
+        this.firstName = firstName;
         this.mail = mail;
         this.address = address;
         this.zip = zip;
-        this.Town = town;
+        this.town = town;
     }
 
     public void setLatitude(String latitude) {
@@ -44,7 +43,7 @@ public class Teacher {
     }
 
     public String getTown() {
-        return Town;
+        return town;
     }
 
     public String getLatitude() {
@@ -55,16 +54,16 @@ public class Teacher {
         return longitude;
     }
 
-    public String get_id() {
-        return _id;
+    public String getId() {
+        return id;
     }
 
-    public String getName() {
-        return name;
+    public String getLastName() {
+        return lastName;
     }
 
-    public String getFname() {
-        return fname;
+    public String getFirstName() {
+        return firstName;
     }
 
     public String getMail() {
@@ -73,12 +72,23 @@ public class Teacher {
 
     @Override
     public String toString() {
-        return new StringBuilder().append("Utilisateur{").append("_id='").append(_id).append('\'').append(", name='").append(name).append('\'').append(", fname='").append(fname).append('\'').append(", mail='").append(mail).append('\'').append(", address='").append(address).append('\'').append(", zip=").append(zip).append(", Town='").append(Town).append('\'').append(", latitude='").append(latitude).append('\'').append(", longitude='").append(longitude).append('\'').append('}').toString();
+        return new StringBuilder().append("Utilisateur{").append("_id='")
+                .append(id).append('\'').append(", name='").append(lastName)
+                .append('\'').append(", fname='").append(firstName)
+                .append('\'').append(", mail='").append(mail).append('\'')
+                .append(", address='").append(address).append('\'')
+                .append(", zip=").append(zip).append(", Town='").append(town)
+                .append('\'').append(", latitude='").append(latitude)
+                .append('\'').append(", longitude='").append(longitude)
+                .append('\'').append('}').toString();
     }
 
     private double distance(double lat2, double lon2) {
         double theta = Double.valueOf(this.longitude) - lon2;
-        double dist = Math.sin(deg2rad(Double.valueOf(this.latitude))) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(Double.valueOf(this.latitude))) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
+        double dist = Math.sin(deg2rad(Double.valueOf(this.latitude)))
+                * Math.sin(deg2rad(lat2))
+                + Math.cos(deg2rad(Double.valueOf(this.latitude)))
+                * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
         dist = Math.acos(dist);
         dist = rad2deg(dist);
         dist = dist * 60 * 1.1515;
@@ -86,42 +96,35 @@ public class Teacher {
         return (dist);
     }
 
-    /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
-    /*::  This function converts decimal degrees to radians             :*/
-    	/*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
-
+    /* ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: */
+    /* :: This function converts decimal degrees to radians : */
+    /* ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: */
 
     private double deg2rad(double deg) {
-     return (deg * Math.PI / 180.0);
+        return (deg * Math.PI / 180.0);
 
     }
 
-    	/*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
-    	/*::  This function converts radians to decimal degrees             :*/
-    	/*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
-
+    /* ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: */
+    /* :: This function converts radians to decimal degrees : */
+    /* ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: */
 
     private double rad2deg(double rad) {
-      return (rad * 180 / Math.PI);
-         }
+        return (rad * 180 / Math.PI);
+    }
 
-
-
-    public Boolean inrange(Teacher voisin,Double range)
-    {
-        Double dist =this.distance(Double.valueOf(voisin.getLatitude()), Double.valueOf(voisin.getLongitude()));
+    public Boolean inrange(Teacher voisin, Double range) {
+        Double dist = this.distance(Double.valueOf(voisin.getLatitude()),
+                Double.valueOf(voisin.getLongitude()));
         System.out.println(dist);
-       return (dist<=range);
+        return (dist <= range);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if(obj instanceof Teacher)
-        {
-            return this._id.equals(((Teacher) obj)._id);
-        }
-        else
-        {
+        if (obj instanceof Teacher) {
+            return this.id.equals(((Teacher) obj).id);
+        } else {
             return false;
         }
     }

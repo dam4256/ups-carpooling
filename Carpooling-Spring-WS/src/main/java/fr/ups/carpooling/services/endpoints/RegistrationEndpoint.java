@@ -10,12 +10,15 @@ import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 
 import fr.ups.carpooling.domain.Teacher;
+import fr.ups.carpooling.domain.constants.Constants;
 import fr.ups.carpooling.services.RegistrationService;
 
+/**
+ * @author Kevin ANATOLE
+ * @author Damien ARONDEL
+ */
 @Endpoint
 public class RegistrationEndpoint {
-
-    private static final String NAMESPACE_URI = "http://ups/fr/carpooling/schemas";
 
     private XPath firstNameExpression;
     private XPath lastNameExpression;
@@ -31,7 +34,8 @@ public class RegistrationEndpoint {
             throws JDOMException {
         this.registrationService = registrationService;
 
-        Namespace namespace = Namespace.getNamespace("reg", NAMESPACE_URI);
+        Namespace namespace = Namespace.getNamespace("reg",
+                Constants.NAMESPACE_URI);
 
         firstNameExpression = XPath.newInstance("//reg:FirstName");
         firstNameExpression.addNamespace(namespace);
@@ -52,11 +56,9 @@ public class RegistrationEndpoint {
         townExpression.addNamespace(namespace);
     }
 
-    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "RegistrationRequest")
+    @PayloadRoot(namespace = Constants.NAMESPACE_URI, localPart = "RegistrationRequest")
     public Element handleRegistrationRequest(
             @RequestPayload Element registrationRequest) throws Exception {
-        Namespace namespace = Namespace.getNamespace("reg", NAMESPACE_URI);
-
         // Process request.
         String firstName = firstNameExpression.valueOf(registrationRequest);
         String lastName = lastNameExpression.valueOf(registrationRequest);

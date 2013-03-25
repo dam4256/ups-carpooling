@@ -11,16 +11,13 @@ import org.lightcouch.View;
 import fr.ups.carpooling.domain.OSMNode;
 import fr.ups.carpooling.domain.OSMWrapperAPI;
 import fr.ups.carpooling.domain.Teacher;
+import fr.ups.carpooling.domain.constants.Constants;
 
 /**
  * @author Kevin ANATOLE
  * @author Damien ARONDEL
  */
 public class RegistrationServiceImpl implements RegistrationService {
-
-    private static final String NAMESPACE_URI = "http://ups/fr/carpooling/schemas";
-    private static final String OPENSTREETMAP_URL = "http://nominatim.openstreetmap.org/search/";
-    private static final String OPENSTREETMAP_ENDING = "?format=xml&addressdetails=1";
 
     private CouchDbClient dbClient;
 
@@ -88,9 +85,9 @@ public class RegistrationServiceImpl implements RegistrationService {
         }
 
         // Verify that the mailing address is real.
-        String url = OPENSTREETMAP_URL + teacher.getAddress() + " "
+        String url = Constants.OPENSTREETMAP_URL + teacher.getAddress() + " "
                 + teacher.getZip() + " " + teacher.getTown()
-                + OPENSTREETMAP_ENDING;
+                + Constants.OPENSTREETMAP_ENDING;
         List<OSMNode> osmNodesInVicinity = null;
         try {
             osmNodesInVicinity = OSMWrapperAPI.getNodes(OSMWrapperAPI
@@ -118,19 +115,19 @@ public class RegistrationServiceImpl implements RegistrationService {
      */
     private Element createResponse(Teacher teacher) {
         // Get the global namespace.
-        Namespace xmlns = Namespace.getNamespace(NAMESPACE_URI);
+        Namespace xmlns = Namespace.getNamespace(Constants.NAMESPACE_URI);
         
         // Create the root element.
         Element response = new Element("RegistrationResponse", xmlns);
         Namespace xs = Namespace.getNamespace("xs",
-                "http://www.w3.org/2001/XMLSchema-instance");
+                Constants.NAMESPACE_XMLSCHEMA);
         response.addNamespaceDeclaration(xs);
-        response.setAttribute("schemaLocation",
-                "http://ups/fr/carpooling/schemas Registration.xsd", xs);
+        response.setAttribute("schemaLocation", Constants.NAMESPACE_URI + " "
+                + "Registration.xsd", xs);
 
         // Remember the request.
-        response.setAttribute("LastName", teacher.getName());
-        response.setAttribute("FirstName", teacher.getFname());
+        response.setAttribute("LastName", teacher.getLastName());
+        response.setAttribute("FirstName", teacher.getFirstName());
         response.setAttribute("UPSMail", teacher.getMail());
         response.setAttribute("Address", teacher.getAddress());
         response.setAttribute("ZipCode", String.valueOf(teacher.getZip()));
