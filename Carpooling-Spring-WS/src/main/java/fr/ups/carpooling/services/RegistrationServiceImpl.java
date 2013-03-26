@@ -74,7 +74,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         if (teachers.size() > 0) {
             result = "KO";
             code = 100;
-            error = "Adresse email deja utilisée";
+            error = "Adresse email deja utilisee";
             return false;
         }
 
@@ -109,7 +109,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         if (osmNodesInVicinity.size() >1) {
             result = "KO";
             code = 200;
-            error = "Adresse postale pas assez précise, plusieurs résultats possibles";
+            error = "Adresse postale pas assez precise, plusieurs resultats possibles";
             return false;
         }
         if(osmNodesInVicinity.size()==1)
@@ -154,6 +154,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         Element resultat = new Element("Result", xmlns);
         resultat.setText(this.result);
         response.addContent(resultat);
+        
         // Verify if an error has occurred during processing.
         if (this.result.equalsIgnoreCase("KO")) {
             // Set the error and its code.
