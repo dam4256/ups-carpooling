@@ -41,7 +41,7 @@ public class RegistrationServiceImpl implements RegistrationService {
                 teacher = dbClient.find(Teacher.class, response.getId());
                 result = "OK";
             } else {
-                result = "K0";
+                result = "KO";
                 code = 300;
                 error = response.getError();
             }
@@ -70,16 +70,18 @@ public class RegistrationServiceImpl implements RegistrationService {
         view.includeDocs(true);
         view.key(teacher.getMail());
         List<Teacher> teachers = view.query(Teacher.class);
+        System.out.println(teachers.size());
         if (teachers.size() > 0) {
-            result = "K0";
+            result = "KO";
             code = 100;
-            error = "Adresse email deja utilisee";
+            error = "Adresse email deja utilisée";
             return false;
         }
 
         // Verify that the email address is valid.
+        //System.out.println(teacher.getMail().endsWith("@univ-tlse3.fr"));
         if (!teacher.getMail().endsWith("@univ-tlse3.fr")) {
-            result = "K0";
+            result = "KO";
             code = 110;
             error = "Adresse email invalide";
             return false;
@@ -89,6 +91,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         String url = Constants.OPENSTREETMAP_URL + teacher.getAddress() + " "
                 + teacher.getZip() + " " + teacher.getTown()
                 + Constants.OPENSTREETMAP_ENDING;
+        //System.out.println(url);
         List<OSMNode> osmNodesInVicinity = null;
         try {
             osmNodesInVicinity = OSMWrapperAPI.getNodes(OSMWrapperAPI
@@ -96,12 +99,25 @@ public class RegistrationServiceImpl implements RegistrationService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (osmNodesInVicinity.size() == 0) {
-            result = "K0";
+        //System.out.println(osmNodesInVicinity.size());
+        if ( osmNodesInVicinity == null ||  osmNodesInVicinity.size() == 0 ) {
+            result = "KO";
             code = 200;
             error = "Adresse postale non connue de Open Street Map";
             return false;
         }
+        if (osmNodesInVicinity.size() >1) {
+            result = "KO";
+            code = 200;
+            error = "Adresse postale pas assez précise, plusieurs résultats possibles";
+            return false;
+        }
+        if(osmNodesInVicinity.size()==1)
+            for (OSMNode osmNode : osmNodesInVicinity) {
+                System.out.println(osmNode.getId() + ":" + osmNode.getLat() + ":" + osmNode.getLon());
+                teacher.setLatitude(osmNode.getLat());
+                teacher.setLongitude(osmNode.getLon());
+            }
         
         // Return true if every constraint is compliant.
         return true;
@@ -135,12 +151,11 @@ public class RegistrationServiceImpl implements RegistrationService {
         response.setAttribute("Town", teacher.getTown());
         
         // Create the main tag.
-        Element result = new Element("Result", xmlns);
-        result.setText(this.result);
-        response.addContent(result);
-
+        Element resultat = new Element("Result", xmlns);
+        resultat.setText(this.result);
+        response.addContent(resultat);
         // Verify if an error has occurred during processing.
-        if (result.equals("KO")) {
+        if (this.result.equalsIgnoreCase("KO")) {
             // Set the error and its code.
             Element code = new Element("Code", xmlns);
             code.setText(String.valueOf(this.code));
