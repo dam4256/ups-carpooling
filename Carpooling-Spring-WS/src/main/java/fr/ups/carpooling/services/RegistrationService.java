@@ -1,10 +1,22 @@
 package fr.ups.carpooling.services;
 
+import org.jdom.Element;
+
+import fr.ups.carpooling.domain.Teacher;
+
+/**
+ * @author Kevin ANATOLE
+ * @author Damien ARONDEL
+ */
 public interface RegistrationService {
 
-    void register(String name, String fname , String mail, String address, int zip, String town);
-    String getResult();
-    Integer getCode();
-    String getError();
+    /**
+     * Register a teacher looking for carpool.
+     * 
+     * @param teacher
+     *            the teacher to register
+     * @return the registration response
+     */
+    Element register(Teacher teacher);
 
 }

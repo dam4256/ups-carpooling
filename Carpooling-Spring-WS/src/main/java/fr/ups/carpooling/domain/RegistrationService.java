@@ -1,33 +1,22 @@
-package fr.ups.carpooling.ws;
-import com.google.gson.JsonObject;
-import com.sun.org.apache.xerces.internal.parsers.XMLParser;
-import org.ektorp.*;
-import org.ektorp.impl.*;
-import org.ektorp.http.*;
-import org.jdom.JDOMFactory;
-import org.lightcouch.CouchDbClient;
-import org.lightcouch.Response;
-import org.lightcouch.View;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
+package fr.ups.carpooling.domain;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.lightcouch.CouchDbClient;
+import org.lightcouch.Response;
+import org.lightcouch.View;
+import org.xml.sax.SAXException;
+
+import fr.ups.carpooling.domain.constants.Constants;
 
 /**
- * Created with IntelliJ IDEA.
- * User: menestrel
- * Date: 18/03/13
- * Time: 17:56
- * To change this template use File | Settings | File Templates.
+ * @author Kevin ANATOLE
+ * @author Damien ARONDEL
  */
 public class RegistrationService {
 
@@ -36,19 +25,19 @@ public class RegistrationService {
         CouchDbClient dbClient = new CouchDbClient();
 
 // CRUD API
-Utilisateur foo = new Utilisateur(name,"ddsfsd", mail,address,zip,town);
-        Utilisateur foo2 = new Utilisateur(name,"vqvdsvd",mail,"15 avenue du colonel roche ",31400,"Toulouse");
+Teacher foo = new Teacher(name,"ddsfsd", mail,address,zip,town);
+        Teacher foo2 = new Teacher(name,"vqvdsvd",mail,"15 avenue du colonel roche ",31400,"Toulouse");
         Response response = dbClient.save(foo);
-        foo = dbClient.find(Utilisateur.class, response.getId());
+        foo = dbClient.find(Teacher.class, response.getId());
         System.out.println(foo.toString());
         View v =dbClient.view("application/viewmail");
         v.includeDocs(true);
         v.key(mail);
-        List<Utilisateur> res =v.query(Utilisateur.class);
+        List<Teacher> res =v.query(Teacher.class);
         System.out.println(res.size()+" " +res.toString());
-        String adresse="http://nominatim.openstreetmap.org/search/";
+        String adresse=Constants.OPENSTREETMAP_URL;
         adresse+=foo2.getAddress()+" "+foo2.getZip()+" "+foo2.getTown();
-        adresse+="?format=xml&addressdetails=1";
+        adresse+=Constants.OPENSTREETMAP_ENDING;
         URL osm = null;
         System.out.println(adresse);
         List<OSMNode> osmNodesInVicinity =OSMWrapperAPI.getNodes(OSMWrapperAPI.getXMLFile(adresse));
@@ -59,14 +48,14 @@ Utilisateur foo = new Utilisateur(name,"ddsfsd", mail,address,zip,town);
             foo2.setLongitude(osmNode.getLon());
         }
         Response response2 = dbClient.save(foo2);
-        foo2 = dbClient.find(Utilisateur.class, response2.getId());
+        foo2 = dbClient.find(Teacher.class, response2.getId());
         System.out.println(foo2.toString());
         View vv =dbClient.view("application/viewusers");
         vv.includeDocs(true);
-        List<Utilisateur> ress = vv.query(Utilisateur.class);
+        List<Teacher> ress = vv.query(Teacher.class);
         System.out.println(ress.size()+" " +ress.toString());
-        List<Utilisateur> voisins = new ArrayList<Utilisateur>();
-        for(Utilisateur f : ress)
+        List<Teacher> voisins = new ArrayList<Teacher>();
+        for(Teacher f : ress)
         {
             if(foo2.inrange(f,25.0) && (!f.equals(foo2)))
             {

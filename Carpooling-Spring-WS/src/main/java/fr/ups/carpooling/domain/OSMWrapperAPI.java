@@ -1,13 +1,4 @@
-package fr.ups.carpooling.ws;
-
-/**
- * Created with IntelliJ IDEA.
- * User: menestrel
- * Date: 21/03/13
- * Time: 14:44
- * To change this template use File | Settings | File Templates.
- */
-/**
+/*
  * (c) Jens Kübler
  * This software is public domain
  *
@@ -23,16 +14,12 @@ package fr.ups.carpooling.ws;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-
-import java.io.IOException;
-
-
+package fr.ups.carpooling.domain;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.Authenticator;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -48,23 +35,23 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-//import org.osm.lights.upload.BasicAuthenticator;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import fr.ups.carpooling.domain.constants.Constants;
+
 /**
- *
+ * @author Kevin ANATOLE
+ * @author Damien ARONDEL
  */
 public class OSMWrapperAPI {
 
-    private static final String OVERPASS_API = "http://www.overpass-api.de/api/interpreter";
-    private static final String OPENSTREETMAP_API_06 = "http://www.openstreetmap.org/api/0.6/";
-
-    public static OSMNode getNode(String nodeId) throws IOException, ParserConfigurationException, SAXException {
-        String string = "http://www.openstreetmap.org/api/0.6/node/" + nodeId;
+    public static OSMNode getNode(String nodeId) throws IOException,
+            ParserConfigurationException, SAXException {
+        String string = Constants.OPENSTREETMAP_API_06 + "node/" + nodeId;
         URL osm = new URL(string);
         HttpURLConnection connection = (HttpURLConnection) osm.openConnection();
 
@@ -79,27 +66,30 @@ public class OSMWrapperAPI {
     }
 
     /**
-     *
-     * @param lon the longitude
-     * @param lat the latitude
-     * @param vicinityRange bounding box in this range
+     * @param lon
+     *            the longitude
+     * @param lat
+     *            the latitude
+     * @param vicinityRange
+     *            bounding box in this range
      * @return the xml document containing the queries nodes
      * @throws IOException
      * @throws SAXException
      * @throws ParserConfigurationException
      */
     @SuppressWarnings("nls")
-    private static Document getXML(double lon, double lat, double vicinityRange) throws IOException, SAXException,
-            ParserConfigurationException {
+    private static Document getXML(double lon, double lat, double vicinityRange)
+            throws IOException, SAXException, ParserConfigurationException {
 
-        DecimalFormat format = new DecimalFormat("##0.0000000", DecimalFormatSymbols.getInstance(Locale.ENGLISH)); //$NON-NLS-1$
+        DecimalFormat format = new DecimalFormat(
+                "##0.0000000", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
         String left = format.format(lat - vicinityRange);
         String bottom = format.format(lon - vicinityRange);
         String right = format.format(lat + vicinityRange);
         String top = format.format(lon + vicinityRange);
 
-        String string = OPENSTREETMAP_API_06 + "map?bbox=" + left + "," + bottom + "," + right + ","
-                + top;
+        String string = Constants.OPENSTREETMAP_API_06 + "map?bbox=" + left + ","
+                + bottom + "," + right + "," + top;
         URL osm = new URL(string);
         HttpURLConnection connection = (HttpURLConnection) osm.openConnection();
 
@@ -108,14 +98,14 @@ public class OSMWrapperAPI {
         return docBuilder.parse(connection.getInputStream());
     }
 
-    public static Document getXMLFile(String location) throws ParserConfigurationException, SAXException, IOException {
+    public static Document getXMLFile(String location)
+            throws ParserConfigurationException, SAXException, IOException {
         DocumentBuilderFactory dbfac = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = dbfac.newDocumentBuilder();
         return docBuilder.parse(location);
     }
 
     /**
-     *
      * @param xmlDocument
      * @return a list of openseamap nodes extracted from xml
      */
@@ -136,8 +126,9 @@ public class OSMWrapperAPI {
                     Node tagItem = tagXMLNodes.item(j);
                     NamedNodeMap tagAttributes = tagItem.getAttributes();
                     if (tagAttributes.getLength() != 0) {
-                        tags.put(tagAttributes.getNamedItem("k").getNodeValue(), tagAttributes.getNamedItem("v")
-                                .getNodeValue());
+                        tags.put(
+                                tagAttributes.getNamedItem("k").getNodeValue(),
+                                tagAttributes.getNamedItem("v").getNodeValue());
                     }
                 }
                 Node namedItemID = attributes.getNamedItem("osm_id");
@@ -160,30 +151,35 @@ public class OSMWrapperAPI {
         return osmNodes;
     }
 
-    public static List<OSMNode> getOSMNodesInVicinity(double lat, double lon, double vicinityRange) throws IOException,
-            SAXException, ParserConfigurationException {
+    public static List<OSMNode> getOSMNodesInVicinity(double lat, double lon,
+            double vicinityRange) throws IOException, SAXException,
+            ParserConfigurationException {
         return OSMWrapperAPI.getNodes(getXML(lon, lat, vicinityRange));
     }
 
     /**
-     *
-     * @param query the overpass query
+     * 
+     * @param query
+     *            the overpass query
      * @return the nodes in the formulated query
      * @throws IOException
      * @throws ParserConfigurationException
      * @throws SAXException
      */
-    public static Document getNodesViaOverpass(String query) throws IOException, ParserConfigurationException, SAXException {
-        String hostname = OVERPASS_API;
+    public static Document getNodesViaOverpass(String query)
+            throws IOException, ParserConfigurationException, SAXException {
+        String hostname = Constants.OVERPASS_API;
         String queryString = readFileAsString(query);
 
         URL osm = new URL(hostname);
         HttpURLConnection connection = (HttpURLConnection) osm.openConnection();
         connection.setDoInput(true);
         connection.setDoOutput(true);
-        connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+        connection.setRequestProperty("Content-Type",
+                "application/x-www-form-urlencoded");
 
-        DataOutputStream printout = new DataOutputStream(connection.getOutputStream());
+        DataOutputStream printout = new DataOutputStream(
+                connection.getOutputStream());
         printout.writeBytes("data=" + URLEncoder.encode(queryString, "utf-8"));
         printout.flush();
         printout.close();
@@ -194,12 +190,12 @@ public class OSMWrapperAPI {
     }
 
     /**
-     *
      * @param filePath
      * @return
      * @throws java.io.IOException
      */
-    private static String readFileAsString(String filePath) throws java.io.IOException {
+    private static String readFileAsString(String filePath)
+            throws java.io.IOException {
         StringBuffer fileData = new StringBuffer(1000);
         BufferedReader reader = new BufferedReader(new FileReader(filePath));
         char[] buf = new char[1024];
@@ -215,21 +211,24 @@ public class OSMWrapperAPI {
 
     /**
      * main method that simply reads some nodes
-     *
+     * 
      * @param args
      * @throws IOException
      * @throws SAXException
      * @throws ParserConfigurationException
      */
-    public static void main(String[] args) throws IOException, SAXException, ParserConfigurationException {
-        /*Authenticator.setDefault(new Authenticator() {
-        });
-        Authenticator.setDefault(new BasicAuthenticator("youruser", "yourpassword"));   */
+    public static void main(String[] args) throws IOException, SAXException,
+            ParserConfigurationException {
+        /*
+         * Authenticator.setDefault(new Authenticator() { });
+         * Authenticator.setDefault(new BasicAuthenticator("youruser",
+         * "yourpassword"));
+         */
         List<OSMNode> osmNodesInVicinity = getOSMNodesInVicinity(49, 8.3, 0.005);
         for (OSMNode osmNode : osmNodesInVicinity) {
-            System.out.println(osmNode.getId() + ":" + osmNode.getLat() + ":" + osmNode.getLon());
+            System.out.println(osmNode.getId() + ":" + osmNode.getLat() + ":"
+                    + osmNode.getLon());
         }
     }
 
 }
-

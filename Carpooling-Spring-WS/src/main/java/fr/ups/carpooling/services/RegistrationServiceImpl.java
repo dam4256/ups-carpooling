@@ -1,110 +1,170 @@
 package fr.ups.carpooling.services;
 
-import fr.ups.carpooling.ws.OSMNode;
-import fr.ups.carpooling.ws.OSMWrapperAPI;
-import fr.ups.carpooling.ws.Utilisateur;
+import java.util.List;
+
+import org.jdom.Element;
+import org.jdom.Namespace;
 import org.lightcouch.CouchDbClient;
 import org.lightcouch.Response;
 import org.lightcouch.View;
-import org.xml.sax.SAXException;
 
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
-import java.net.URL;
-import java.util.List;
+import fr.ups.carpooling.domain.OSMNode;
+import fr.ups.carpooling.domain.OSMWrapperAPI;
+import fr.ups.carpooling.domain.Teacher;
+import fr.ups.carpooling.domain.constants.Constants;
 
+/**
+ * @author Kevin ANATOLE
+ * @author Damien ARONDEL
+ */
 public class RegistrationServiceImpl implements RegistrationService {
+
+    private CouchDbClient dbClient;
 
     private String result;
     private Integer code;
     private String error;
 
+    public Element register(Teacher teacher) {
+        // Set up the CouchDB database.
+        dbClient = new CouchDbClient();
+
+        // Verify the constraints.
+        if (isValidConstraints(teacher)) {
+            // Carry out the registration in accordance with the previous
+            // verifications.
+            Response response = dbClient.save(teacher);
+
+            // Verify that the registration has been successfully completed.
+            if (response.getId() != null) {
+                teacher = dbClient.find(Teacher.class, response.getId());
+                result = "OK";
+            } else {
+                result = "KO";
+                code = 300;
+                error = response.getError();
+            }
+        }
+
+        // Return the response.
+        return createResponse(teacher);
+    }
+
     /**
-     *
-     * @param name
-     * @param fname
-     * @param mail
-     * @param address
-     * @param zip
-     * @param town
+     * Verify the following constraints:
+     * <ul>
+     * <li>Unused email address
+     * <li>Invalid email address
+     * <li>Unknown mailing address
+     * </ul>
+     * 
+     * @param teacher
+     *            the teacher to verify
+     * @return <code>true</code> if the teacher is valid;
+     *         <code>false</code> otherwise
      */
-    public void register(String name, String fname , String mail, String address, int zip, String town) {
-        CouchDbClient dbClient = new CouchDbClient();
-
-        //Vérification des contraintes de validité
-            //Adresse email déjà utilisée
-            View v =dbClient.view("application/viewmail");
-            v.includeDocs(true);
-            v.key(mail);
-            List<Utilisateur> utilisateurs_mail =v.query(Utilisateur.class);
-            if(utilisateurs_mail.size()>0)
-            {
-                result ="K0";
-                code = 100;
-                error= "Adresse email déjà utilisée";
-                return;
-            }
-            //Adresse email ivalide
-            if(!mail.endsWith("@univ-tlse3.fr"))
-            {
-                result ="K0";
-                code = 110;
-                error= "Adresse email invalide";
-                return;
-            }
-            //Adresse postale non reconnue par OSM
-            String adresse_osm_api="http://nominatim.openstreetmap.org/search/";
-            adresse_osm_api+=address+" "+zip+" "+town;
-            adresse_osm_api+="?format=xml&addressdetails=1";
-            URL osm = null;
-            List<OSMNode> osmNodesInVicinity = null;
-            try {
-                osmNodesInVicinity = OSMWrapperAPI.getNodes(OSMWrapperAPI.getXMLFile(adresse_osm_api));
-            } catch (ParserConfigurationException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            } catch (SAXException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            } catch (IOException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            }
-            if(osmNodesInVicinity.size()==0)
-            {
-                result ="K0";
-                code = 200;
-                error= "Adresse postale non reconnue par OSM";
-                return;
-            }
-        //Toutes les contraintes sont vérifiées maintenant on procède à l'enregistrement
-        Utilisateur user = new Utilisateur(name,fname,mail,address,zip,town);
-        Response response = dbClient.save(user);
-        if(response.getId()!=null)
-        {
-            user = dbClient.find(Utilisateur.class, response.getId());
-            result="OK";
-            code = 220;
-            error= "Inscription réussie";
+    private boolean isValidConstraints(Teacher teacher) {
+        // Verify that the email address is free.
+        View view = dbClient.view("application/viewmail");
+        view.includeDocs(true);
+        view.key(teacher.getMail());
+        List<Teacher> teachers = view.query(Teacher.class);
+        System.out.println(teachers.size());
+        if (teachers.size() > 0) {
+            result = "KO";
+            code = 100;
+            error = "Adresse email deja utilisée";
+            return false;
         }
-        else
-        {
-            result ="K0";
-            code = 300;
-            error= response.getError();
+
+        // Verify that the email address is valid.
+        //System.out.println(teacher.getMail().endsWith("@univ-tlse3.fr"));
+        if (!teacher.getMail().endsWith("@univ-tlse3.fr")) {
+            result = "KO";
+            code = 110;
+            error = "Adresse email invalide";
+            return false;
         }
-        // result = ...
-        // code = ...
-        // error = ...
+
+        // Verify that the mailing address is real.
+        String url = Constants.OPENSTREETMAP_URL + teacher.getAddress() + " "
+                + teacher.getZip() + " " + teacher.getTown()
+                + Constants.OPENSTREETMAP_ENDING;
+        //System.out.println(url);
+        List<OSMNode> osmNodesInVicinity = null;
+        try {
+            osmNodesInVicinity = OSMWrapperAPI.getNodes(OSMWrapperAPI
+                    .getXMLFile(url));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //System.out.println(osmNodesInVicinity.size());
+        if ( osmNodesInVicinity == null ||  osmNodesInVicinity.size() == 0 ) {
+            result = "KO";
+            code = 200;
+            error = "Adresse postale non connue de Open Street Map";
+            return false;
+        }
+        if (osmNodesInVicinity.size() >1) {
+            result = "KO";
+            code = 200;
+            error = "Adresse postale pas assez précise, plusieurs résultats possibles";
+            return false;
+        }
+        if(osmNodesInVicinity.size()==1)
+            for (OSMNode osmNode : osmNodesInVicinity) {
+                System.out.println(osmNode.getId() + ":" + osmNode.getLat() + ":" + osmNode.getLon());
+                teacher.setLatitude(osmNode.getLat());
+                teacher.setLongitude(osmNode.getLon());
+            }
+        
+        // Return true if every constraint is compliant.
+        return true;
     }
 
-    public String getResult() {
-        return result;
-    }
+    /**
+     * Create the response of the registration service.
+     * 
+     * @param teacher
+     *            the teacher associated with the request
+     * @return the XML element completed
+     */
+    private Element createResponse(Teacher teacher) {
+        // Get the global namespace.
+        Namespace xmlns = Namespace.getNamespace(Constants.NAMESPACE_URI);
+        
+        // Create the root element.
+        Element response = new Element("RegistrationResponse", xmlns);
+        Namespace xs = Namespace.getNamespace("xs",
+                Constants.NAMESPACE_XMLSCHEMA);
+        response.addNamespaceDeclaration(xs);
+        response.setAttribute("schemaLocation", Constants.NAMESPACE_URI + " "
+                + "Registration.xsd", xs);
 
-    public Integer getCode() {
-        return code;
-    }
+        // Remember the request.
+        response.setAttribute("LastName", teacher.getLastName());
+        response.setAttribute("FirstName", teacher.getFirstName());
+        response.setAttribute("UPSMail", teacher.getMail());
+        response.setAttribute("Address", teacher.getAddress());
+        response.setAttribute("ZipCode", String.valueOf(teacher.getZip()));
+        response.setAttribute("Town", teacher.getTown());
+        
+        // Create the main tag.
+        Element resultat = new Element("Result", xmlns);
+        resultat.setText(this.result);
+        response.addContent(resultat);
+        // Verify if an error has occurred during processing.
+        if (this.result.equalsIgnoreCase("KO")) {
+            // Set the error and its code.
+            Element code = new Element("Code", xmlns);
+            code.setText(String.valueOf(this.code));
+            response.addContent(code);
+            Element error = new Element("Error", xmlns);
+            error.setText(this.error);
+            response.addContent(error);
+        }
 
-    public String getError() {
-        return error;
+        return response;
     }
 
 }
