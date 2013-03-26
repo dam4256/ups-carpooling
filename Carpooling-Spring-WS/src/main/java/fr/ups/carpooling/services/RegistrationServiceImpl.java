@@ -157,8 +157,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         if (this.result.equalsIgnoreCase("KO")) {
             // Set the error and its code.
             Element code = new Element("Code", xmlns);
-            //code.setText(String.valueOf(this.code));
-            code.setText(this.code.toString());
+            code.setText(String.valueOf(this.code));
             response.addContent(code);
             Element error = new Element("Error", xmlns);
             error.setText(this.error);
