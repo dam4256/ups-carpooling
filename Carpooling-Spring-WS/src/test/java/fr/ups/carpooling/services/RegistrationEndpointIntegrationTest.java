@@ -35,7 +35,7 @@ public class RegistrationEndpointIntegrationTest {
     }
 
     @Test
-    public void releveNotesEndpoint() throws Exception {
+    public void registrationEndpoint() throws Exception {
         Source requestPayload = new StreamSource(new ClassPathResource(
                 "RegistrationRequest.xml").getInputStream());
         Source responsePayload = new StreamSource(new ClassPathResource(

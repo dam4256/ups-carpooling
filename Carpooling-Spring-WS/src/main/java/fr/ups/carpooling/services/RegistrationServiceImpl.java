@@ -2,6 +2,7 @@ package fr.ups.carpooling.services;
 
 import java.util.List;
 
+import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.Namespace;
 import org.lightcouch.CouchDbClient;
@@ -148,8 +149,9 @@ public class RegistrationServiceImpl implements RegistrationService {
             error.setText(this.error);
             response.addContent(error);
         }
-
-        return response;
+        
+        Document doc = new Document(response);
+        return doc.getRootElement();
     }
 
 }
