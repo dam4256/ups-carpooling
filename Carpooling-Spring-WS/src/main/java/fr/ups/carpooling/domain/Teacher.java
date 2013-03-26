@@ -72,7 +72,7 @@ public class Teacher {
 
     @Override
     public String toString() {
-        return new StringBuilder().append("Utilisateur{").append("_id='")
+        return new StringBuilder().append("Teacher{").append("_id='")
                 .append(id).append('\'').append(", name='").append(lastName)
                 .append('\'').append(", fname='").append(firstName)
                 .append('\'').append(", mail='").append(mail).append('\'')

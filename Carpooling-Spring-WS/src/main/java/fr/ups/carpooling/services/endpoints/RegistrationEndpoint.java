@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
+import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 
 import fr.ups.carpooling.domain.Teacher;
 import fr.ups.carpooling.domain.constants.Constants;
@@ -33,7 +34,7 @@ public class RegistrationEndpoint {
     public RegistrationEndpoint(RegistrationService registrationService)
             throws JDOMException {
         this.registrationService = registrationService;
-
+        
         Namespace namespace = Namespace.getNamespace("reg",
                 Constants.NAMESPACE_URI);
 
@@ -57,6 +58,7 @@ public class RegistrationEndpoint {
     }
 
     @PayloadRoot(namespace = Constants.NAMESPACE_URI, localPart = "RegistrationRequest")
+    @ResponsePayload
     public Element handleRegistrationRequest(
             @RequestPayload Element registrationRequest) throws Exception {
         // Process request.
