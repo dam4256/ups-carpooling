@@ -11,7 +11,7 @@ import org.lightcouch.View;
 
 import fr.ups.carpooling.domain.OSMNode;
 import fr.ups.carpooling.domain.OSMWrapperAPI;
-import fr.ups.carpooling.domain.Teacher;
+import fr.ups.carpooling.domain.User;
 import fr.ups.carpooling.domain.constants.Constants;
 
 /**
@@ -26,19 +26,19 @@ public class RegistrationServiceImpl implements RegistrationService {
     private Integer code;
     private String error;
 
-    public Element register(Teacher teacher) {
+    public Element register(User user) {
         // Set up the CouchDB database.
         dbClient = new CouchDbClient();
 
         // Verify the constraints.
-        if (isValidConstraints(teacher)) {
+        if (isValidConstraints(user)) {
             // Carry out the registration in accordance with the previous
             // verifications.
-            Response response = dbClient.save(teacher);
+            Response response = dbClient.save(user);
 
             // Verify that the registration has been successfully completed.
             if (response.getId() != null) {
-                teacher = dbClient.find(Teacher.class, response.getId());
+                user = dbClient.find(User.class, response.getId());
                 result = "OK";
             } else {
                 result = "KO";
@@ -48,7 +48,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         }
 
         // Return the response.
-        return createResponse(teacher);
+        return createResponse(user);
     }
 
     /**
@@ -59,19 +59,19 @@ public class RegistrationServiceImpl implements RegistrationService {
      * <li>Unknown mailing address
      * </ul>
      * 
-     * @param teacher
-     *            the teacher to verify
-     * @return <code>true</code> if the teacher is valid;
+     * @param user
+     *            the user to verify
+     * @return <code>true</code> if the user is valid;
      *         <code>false</code> otherwise
      */
-    private boolean isValidConstraints(Teacher teacher) {
+    private boolean isValidConstraints(User user) {
         // Verify that the email address is free.
         View view = dbClient.view("application/viewmail");
         view.includeDocs(true);
-        view.key(teacher.getMail());
-        List<Teacher> teachers = view.query(Teacher.class);
-        System.out.println(teachers.size());
-        if (teachers.size() > 0) {
+        view.key(user.getMail());
+        List<User> users = view.query(User.class);
+        System.out.println(users.size());
+        if (users.size() > 0) {
             result = "KO";
             code = 100;
             error = "Adresse email deja utilisee";
@@ -79,8 +79,8 @@ public class RegistrationServiceImpl implements RegistrationService {
         }
 
         // Verify that the email address is valid.
-        //System.out.println(teacher.getMail().endsWith("@univ-tlse3.fr"));
-        if (!teacher.getMail().endsWith("@univ-tlse3.fr")) {
+        //System.out.println(user.getMail().endsWith("@univ-tlse3.fr"));
+        if (!user.getMail().endsWith("@univ-tlse3.fr")) {
             result = "KO";
             code = 110;
             error = "Adresse email invalide";
@@ -88,8 +88,8 @@ public class RegistrationServiceImpl implements RegistrationService {
         }
 
         // Verify that the mailing address is real.
-        String url = Constants.OPENSTREETMAP_URL + teacher.getAddress() + " "
-                + teacher.getZip() + " " + teacher.getTown()
+        String url = Constants.OPENSTREETMAP_URL + user.getAddress() + " "
+                + user.getZip() + " " + user.getTown()
                 + Constants.OPENSTREETMAP_ENDING;
         //System.out.println(url);
         List<OSMNode> osmNodesInVicinity = null;
@@ -115,8 +115,8 @@ public class RegistrationServiceImpl implements RegistrationService {
         if(osmNodesInVicinity.size()==1)
             for (OSMNode osmNode : osmNodesInVicinity) {
                 System.out.println(osmNode.getId() + ":" + osmNode.getLat() + ":" + osmNode.getLon());
-                teacher.setLatitude(osmNode.getLat());
-                teacher.setLongitude(osmNode.getLon());
+                user.setLatitude(osmNode.getLat());
+                user.setLongitude(osmNode.getLon());
             }
         
         // Return true if every constraint is compliant.
@@ -126,11 +126,11 @@ public class RegistrationServiceImpl implements RegistrationService {
     /**
      * Create the response of the registration service.
      * 
-     * @param teacher
-     *            the teacher associated with the request
+     * @param user
+     *            the user associated with the request
      * @return the XML element completed
      */
-    private Element createResponse(Teacher teacher) {
+    private Element createResponse(User user) {
         // Get the global namespace.
         Namespace xmlns = Namespace.getNamespace(Constants.NAMESPACE_URI);
         
@@ -143,12 +143,12 @@ public class RegistrationServiceImpl implements RegistrationService {
                 + "Registration.xsd", xs);
 
         // Remember the request.
-        response.setAttribute("LastName", teacher.getLastName());
-        response.setAttribute("FirstName", teacher.getFirstName());
-        response.setAttribute("UPSMail", teacher.getMail());
-        response.setAttribute("Address", teacher.getAddress());
-        response.setAttribute("ZipCode", String.valueOf(teacher.getZip()));
-        response.setAttribute("Town", teacher.getTown());
+        response.setAttribute("LastName", user.getLastName());
+        response.setAttribute("FirstName", user.getFirstName());
+        response.setAttribute("UPSMail", user.getMail());
+        response.setAttribute("Address", user.getAddress());
+        response.setAttribute("ZipCode", String.valueOf(user.getZip()));
+        response.setAttribute("Town", user.getTown());
         
         // Create the main tag.
         Element resultat = new Element("Result", xmlns);

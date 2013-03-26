@@ -10,7 +10,7 @@ import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 
-import fr.ups.carpooling.domain.Teacher;
+import fr.ups.carpooling.domain.User;
 import fr.ups.carpooling.domain.constants.Constants;
 import fr.ups.carpooling.services.RegistrationService;
 
@@ -70,11 +70,11 @@ public class RegistrationEndpoint {
         String town = townExpression.valueOf(registrationRequest);
 
         // Create the teacher in search of a registration.
-        Teacher teacher = new Teacher(lastName, firstName, mail, address, zip,
+        User user = new User(lastName, firstName, mail, address, zip,
                 town);
 
         // Call the service to register the teacher and return the response.
-        Element response = registrationService.register(teacher);
+        Element response = registrationService.register(user);
         return response;
     }
 

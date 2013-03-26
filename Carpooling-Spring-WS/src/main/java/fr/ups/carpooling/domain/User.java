@@ -4,7 +4,7 @@ package fr.ups.carpooling.domain;
  * @author Kevin ANATOLE
  * @author Damien ARONDEL
  */
-public class Teacher {
+public class User {
 
     private String id;
     private String lastName;
@@ -16,7 +16,7 @@ public class Teacher {
     private String latitude = "0";
     private String longitude = "0";
 
-    public Teacher(String lastName, String firstName, String mail,
+    public User(String lastName, String firstName, String mail,
             String address, int zip, String town) {
         this.lastName = lastName;
         this.firstName = firstName;
@@ -72,7 +72,7 @@ public class Teacher {
 
     @Override
     public String toString() {
-        return new StringBuilder().append("Teacher{").append("_id='")
+        return new StringBuilder().append("User{").append("_id='")
                 .append(id).append('\'').append(", name='").append(lastName)
                 .append('\'').append(", fname='").append(firstName)
                 .append('\'').append(", mail='").append(mail).append('\'')
@@ -113,7 +113,7 @@ public class Teacher {
         return (rad * 180 / Math.PI);
     }
 
-    public Boolean inrange(Teacher voisin, Double range) {
+    public Boolean inrange(User voisin, Double range) {
         Double dist = this.distance(Double.valueOf(voisin.getLatitude()),
                 Double.valueOf(voisin.getLongitude()));
         System.out.println(dist);
@@ -122,8 +122,8 @@ public class Teacher {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof Teacher) {
-            return this.id.equals(((Teacher) obj).id);
+        if (obj instanceof User) {
+            return this.id.equals(((User) obj).id);
         } else {
             return false;
         }

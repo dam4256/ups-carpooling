@@ -2,7 +2,7 @@ package fr.ups.carpooling.services;
 
 import org.jdom.Element;
 
-import fr.ups.carpooling.domain.Teacher;
+import fr.ups.carpooling.domain.User;
 
 /**
  * @author Kevin ANATOLE
@@ -11,12 +11,12 @@ import fr.ups.carpooling.domain.Teacher;
 public interface RegistrationService {
 
     /**
-     * Register a teacher looking for carpool.
+     * Register a user looking for carpool.
      * 
-     * @param teacher
-     *            the teacher to register
+     * @param user
+     *            the user to register
      * @return the registration response
      */
-    Element register(Teacher teacher);
+    Element register(User user);
 
 }

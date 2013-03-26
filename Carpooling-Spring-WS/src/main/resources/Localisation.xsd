@@ -1,0 +1,35 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+        xmlns:loc="http://ups/fr/carpooling/schemas"
+        elementFormDefault="qualified"
+        targetNamespace="http://ups/fr/carpooling/schemas">
+    <xs:element name="LocalisationRequest" type="loc:LocalisationRequestType"/>
+    <xs:element name="LocalisationResponse" type="loc:LocalisationResponseType"/>
+    <xs:complexType name="LocalisationRequestType">
+        <xs:all>
+            <xs:element name="UserID" type="xs:integer"/>
+            <xs:element name="RadiusKM" type="xs:integer"/>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="LocalisationResponseType">
+        <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="User" type="loc:UserType"/>
+        </xs:sequence>
+        <xs:attribute name="UserID" type="xs:integer"/>
+        <xs:attribute name="RadiusKM" type="xs:integer"/>
+    </xs:complexType>
+    <xs:complexType name="UserType">
+        <xs:sequence>
+            <xs:element name="LastName" type="xs:string"/>
+            <xs:element name="FirstName" type="xs:string"/>
+            <xs:element name="UPSMail" type="loc:MailType"/>
+            <xs:element name="Address" type="xs:string"/>
+            <xs:element name="ZipCode" type="xs:integer"/>
+            <xs:element name="Town" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:simpleType name="MailType">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="[^@]+@[^\.]+\..+"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>

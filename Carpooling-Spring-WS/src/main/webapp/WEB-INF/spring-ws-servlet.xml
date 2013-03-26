@@ -11,4 +11,8 @@
         <constructor-arg name="registrationService" ref="registrationService"/>
     </bean>
     <bean id="registrationService" class="fr.ups.carpooling.services.RegistrationServiceImpl"/>
+    <bean id="localisationEndPoint" class="fr.ups.carpooling.services.endpoints.LocalisationEndpoint">
+        <constructor-arg name="localisationService" ref="localisationService"/>
+    </bean>
+    <bean id="localisationService" class="fr.ups.carpooling.services.LocalisationServiceImpl"/>
 </beans>

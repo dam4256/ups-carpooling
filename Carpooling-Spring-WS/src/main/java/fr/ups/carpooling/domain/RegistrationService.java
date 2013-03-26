@@ -25,15 +25,15 @@ public class RegistrationService {
         CouchDbClient dbClient = new CouchDbClient();
 
 // CRUD API
-Teacher foo = new Teacher(name,"ddsfsd", mail,address,zip,town);
-        Teacher foo2 = new Teacher(name,"vqvdsvd",mail,"15 avenue du colonel roche ",31400,"Toulouse");
+User foo = new User(name,"ddsfsd", mail,address,zip,town);
+        User foo2 = new User(name,"vqvdsvd",mail,"15 avenue du colonel roche ",31400,"Toulouse");
         Response response = dbClient.save(foo);
-        foo = dbClient.find(Teacher.class, response.getId());
+        foo = dbClient.find(User.class, response.getId());
         System.out.println(foo.toString());
         View v =dbClient.view("application/viewmail");
         v.includeDocs(true);
         v.key(mail);
-        List<Teacher> res =v.query(Teacher.class);
+        List<User> res =v.query(User.class);
         System.out.println(res.size()+" " +res.toString());
         String adresse=Constants.OPENSTREETMAP_URL;
         adresse+=foo2.getAddress()+" "+foo2.getZip()+" "+foo2.getTown();
@@ -48,14 +48,14 @@ Teacher foo = new Teacher(name,"ddsfsd", mail,address,zip,town);
             foo2.setLongitude(osmNode.getLon());
         }
         Response response2 = dbClient.save(foo2);
-        foo2 = dbClient.find(Teacher.class, response2.getId());
+        foo2 = dbClient.find(User.class, response2.getId());
         System.out.println(foo2.toString());
         View vv =dbClient.view("application/viewusers");
         vv.includeDocs(true);
-        List<Teacher> ress = vv.query(Teacher.class);
+        List<User> ress = vv.query(User.class);
         System.out.println(ress.size()+" " +ress.toString());
-        List<Teacher> voisins = new ArrayList<Teacher>();
-        for(Teacher f : ress)
+        List<User> voisins = new ArrayList<User>();
+        for(User f : ress)
         {
             if(foo2.inrange(f,25.0) && (!f.equals(foo2)))
             {

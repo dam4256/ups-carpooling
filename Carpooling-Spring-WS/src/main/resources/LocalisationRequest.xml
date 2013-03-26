@@ -1,0 +1,6 @@
+<LocalisationRequest xmlns="http://ups/fr/carpooling/schemas"
+        xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+        xs:schemaLocation="http://ups/fr/carpooling/schemas Localisation.xsd">
+    <UserID>1</UserID>
+    <RadiusKM>5</RadiusKM>
+</LocalisationRequest>
