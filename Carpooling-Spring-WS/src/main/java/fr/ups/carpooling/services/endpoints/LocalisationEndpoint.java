@@ -1,6 +1,7 @@
 package fr.ups.carpooling.services.endpoints;
 
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
+import org.springframework.ws.server.endpoint.annotation.Namespace;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 import org.springframework.ws.server.endpoint.annotation.XPathParam;
@@ -23,10 +24,12 @@ public class LocalisationEndpoint {
     }
 
     @PayloadRoot(namespace = Constants.NAMESPACE_URI, localPart = "LocalisationRequest")
+    @Namespace(prefix = "cp", uri = Constants.NAMESPACE_URI)
     @ResponsePayload
     public Element handleLocalisationRequest(
-            @XPathParam("//UserID") Integer userID,
-            @XPathParam("//RadiusKM") Integer radiusKM) throws Exception {
+            @XPathParam("/cp:LocalisationRequest/cp:UserID") Integer userID,
+            @XPathParam("/cp:LocalisationRequest/cp:RadiusKM") Integer radiusKM)
+            throws Exception {
         // Search possible neighbours inside the radius and return the response.
         Element response = localisationService.searchForNeighbours(userID,
                 radiusKM);

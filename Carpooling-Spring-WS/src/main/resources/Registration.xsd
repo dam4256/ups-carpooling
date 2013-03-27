@@ -1,14 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-        xmlns:reg="http://ups/fr/carpooling/schemas"
         elementFormDefault="qualified"
+        attributeFormDefault="unqualified"
         targetNamespace="http://ups/fr/carpooling/schemas">
-    <xs:element name="RegistrationRequest" type="reg:RegistrationRequestType"/>
-    <xs:element name="RegistrationResponse" type="reg:RegistrationResponseType"/>
+    <xs:element name="RegistrationRequest" type="cp:RegistrationRequestType" xmlns:cp="http://ups/fr/carpooling/schemas"/>
+    <xs:element name="RegistrationResponse" type="cp:RegistrationResponseType" xmlns:cp="http://ups/fr/carpooling/schemas"/>
     <xs:complexType name="RegistrationRequestType">
         <xs:all>
             <xs:element name="LastName" type="xs:string"/>
 		    <xs:element name="FirstName" type="xs:string"/>
-		    <xs:element name="UPSMail" type="reg:MailType"/>
+		    <xs:element name="UPSMail" type="cp:MailType" xmlns:cp="http://ups/fr/carpooling/schemas"/>
 		    <xs:element name="Address" type="xs:string"/>
 		    <xs:element name="ZipCode" type="xs:integer"/>
 		    <xs:element name="Town" type="xs:string"/>
@@ -29,7 +30,7 @@
         </xs:sequence>
         <xs:attribute name="LastName" type="xs:string"/>
         <xs:attribute name="FirstName" type="xs:string"/>
-        <xs:attribute name="UPSMail" type="reg:MailType"/>
+        <xs:attribute name="UPSMail" type="cp:MailType" xmlns:cp="http://ups/fr/carpooling/schemas"/>
         <xs:attribute name="Address" type="xs:string"/>
         <xs:attribute name="ZipCode" type="xs:integer"/>
         <xs:attribute name="Town" type="xs:string"/>

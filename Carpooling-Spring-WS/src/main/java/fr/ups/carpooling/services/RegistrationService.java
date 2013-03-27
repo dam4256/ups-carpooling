@@ -16,7 +16,8 @@ public interface RegistrationService {
      * @param user
      *            the user to register
      * @return the registration response
+     * @throws Exception
      */
-    Element register(User user);
+    Element register(User user) throws Exception;
 
 }

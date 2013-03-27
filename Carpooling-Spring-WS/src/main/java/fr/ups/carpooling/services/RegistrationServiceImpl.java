@@ -6,7 +6,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.log4j.Logger;
 import org.lightcouch.CouchDbClient;
 import org.lightcouch.Response;
 import org.lightcouch.View;
@@ -32,23 +31,25 @@ public class RegistrationServiceImpl implements RegistrationService {
     private Integer code;
     private String error;
 
-    public Element register(User user) {
+    public Element register(User user) throws ParserConfigurationException {
         // Set up the CouchDB database.
-        /*
-         * dbClient = new CouchDbClient();
-         * 
-         * // Verify the constraints. if (isValidConstraints(user)) { // Carry
-         * out the registration in accordance with the previous //
-         * verifications. Response response = dbClient.save(user);
-         * 
-         * // Verify that the registration has been successfully completed. if
-         * (response.getId() != null) { user = dbClient.find(User.class,
-         * response.getId()); result = "OK"; } else { result = "KO"; code = 300;
-         * error = response.getError(); } }
-         */
-        result = "KO";
-        code = 100;
-        error = "Adresse email deja utilisee";
+        dbClient = new CouchDbClient();
+
+        // Verify the constraints.
+        if (isValidConstraints(user)) {
+            // Carry out the registration in accordance with the previous
+            // verifications.
+            Response response = dbClient.save(user);
+            // Verify that the registration has been successfully completed.
+            if (response.getId() != null) {
+                user = dbClient.find(User.class, response.getId());
+                result = "OK";
+            } else {
+                result = "KO";
+                code = 300;
+                error = response.getError();
+            }
+        }
 
         // Return the response.
         return createResponse(user);
@@ -133,49 +134,48 @@ public class RegistrationServiceImpl implements RegistrationService {
      * @param user
      *            the user associated with the request
      * @return the XML element completed
+     * @throws ParserConfigurationException  
      */
-    private Element createResponse(User user) {
-        try {
-            // Create a new DOM.
-            DocumentBuilderFactory factory = DocumentBuilderFactory
-                    .newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            document = builder.newDocument();
+    private Element createResponse(User user) throws ParserConfigurationException {
+        // Create a new DOM.
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        document = builder.newDocument();
 
-            // Create the DOM tree diagram.
-            Element root = document.createElement("RegistrationResponse");
-            root.setAttribute("xmlns", Constants.NAMESPACE_URI);
-            root.setAttribute("xmlns:xs", Constants.NAMESPACE_XMLSCHEMA);
-            root.setAttribute("xs:schemaLocation", Constants.NAMESPACE_URI
-                    + " " + "Registration.xsd");
-            root.setAttribute("LastName", user.getLastName());
-            root.setAttribute("FirstName", user.getFirstName());
-            root.setAttribute("UPSMail", user.getMail());
-            root.setAttribute("Address", user.getAddress());
-            root.setAttribute("ZipCode", String.valueOf(user.getZip()));
-            root.setAttribute("Town", user.getTown());
+        // Set DOM properties.
+        document.setXmlStandalone(true);
 
-            // Create the main tag.
-            Element resultElement = document.createElement("Result");
-            resultElement.setTextContent(result);
-            root.appendChild(resultElement);
+        // Create the DOM tree diagram.
+        Element root = document.createElement("RegistrationResponse");
+        document.appendChild(root);
+        root.setAttribute("xmlns", Constants.NAMESPACE_URI);
+        root.setAttribute("xmlns:xs", Constants.NAMESPACE_XMLSCHEMA);
+        root.setAttribute("xs:schemaLocation", Constants.NAMESPACE_URI + " "
+                + "Registration.xsd");
+        root.setAttribute("LastName", user.getLastName());
+        root.setAttribute("FirstName", user.getFirstName());
+        root.setAttribute("UPSMail", user.getMail());
+        root.setAttribute("Address", user.getAddress());
+        root.setAttribute("ZipCode", String.valueOf(user.getZip()));
+        root.setAttribute("Town", user.getTown());
 
-            // Verify if an error has occurred during processing.
-            if (result.equals("KO")) {
-                // Set the error and its code.
-                Element codeElement = document.createElement("Code");
-                codeElement.setTextContent(String.valueOf(code));
-                root.appendChild(codeElement);
-                Element errorElement = document.createElement("Error");
-                errorElement.setTextContent(error);
-                root.appendChild(errorElement);
-            }
+        // Create the main tag.
+        Element resultElement = document.createElement("Result");
+        resultElement.setTextContent(result);
+        root.appendChild(resultElement);
 
-            return document.getDocumentElement();
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-            return null;
+        // Verify if an error has occurred during processing.
+        if (result.equals("KO")) {
+            // Set the error and its code.
+            Element codeElement = document.createElement("Code");
+            codeElement.setTextContent(String.valueOf(code));
+            root.appendChild(codeElement);
+            Element errorElement = document.createElement("Error");
+            errorElement.setTextContent(error);
+            root.appendChild(errorElement);
         }
+
+        return document.getDocumentElement();
     }
 
 }

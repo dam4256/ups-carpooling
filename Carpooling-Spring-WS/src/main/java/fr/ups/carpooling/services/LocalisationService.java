@@ -16,7 +16,8 @@ public interface LocalisationService {
      * @param radiusKM
      *            the radius around the user, in kilometers
      * @return the possible neighbours
+     * @throws Exception
      */
-    Element searchForNeighbours(Integer userID, Integer radiusKM);
+    Element searchForNeighbours(Integer userID, Integer radiusKM) throws Exception;
 
 }

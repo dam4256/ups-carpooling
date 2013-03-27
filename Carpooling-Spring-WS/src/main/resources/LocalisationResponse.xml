@@ -1,14 +1,14 @@
-<LocalisationResponse xmnls="http://ups/fr/carpooling/schemas"
+<LocalisationResponse xmlns="http://ups/fr/carpooling/schemas"
         xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-        xs:schemaLocation="http://ups/fr/carpooling/schemas Localisation.xsd"
+        xs:schemaLocation="http://ups/fr/carpooling/schemas Localisation.xsd "
         UserID="1"
         RadiusKM="5">
     <User>
         <LastName>Doe</LastName>
         <FirstName>John</FirstName>
-	    <UPSMail>john.doe@univ-tlse3.fr</UPSMail>
-	    <Address>118 route de Narbonne</Address>
-	    <ZipCode>31062</ZipCode>
-	    <Town>Toulouse</Town>
-    </User>
+        <UPSMail>john.doe@univ-tlse3.fr</UPSMail>
+        <Address>118 route de Narbonne</Address>
+        <ZipCode>31062</ZipCode>
+        <Town>Toulouse</Town>
+    </User> 
 </LocalisationResponse>

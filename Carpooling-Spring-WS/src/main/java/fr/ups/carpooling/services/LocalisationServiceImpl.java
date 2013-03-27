@@ -20,44 +20,45 @@ public class LocalisationServiceImpl implements LocalisationService {
     private Integer userID;
     private Integer radiusKM;
 
-    public Element searchForNeighbours(Integer userID, Integer radiusKM) {
+    public Element searchForNeighbours(Integer userID, Integer radiusKM)
+            throws ParserConfigurationException {
         List<User> neighbours = new ArrayList<User>();
         this.userID = userID;
         this.radiusKM = radiusKM;
 
-        // ...
+        // Complete neighbours.
+        // ... Met ton code là!
 
         // Return the response.
         return createResponse(neighbours);
     }
 
-    private Element createResponse(List<User> neighbours) {
-        try {
-            // Create a new DOM.
-            DocumentBuilderFactory factory = DocumentBuilderFactory
-                    .newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            document = builder.newDocument();
+    private Element createResponse(List<User> neighbours)
+            throws ParserConfigurationException {
+        // Create a new DOM.
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        document = builder.newDocument();
 
-            // Create the DOM tree diagram.
-            Element root = document.createElement("LocalisationResponse");
-            root.setAttribute("xmlns", Constants.NAMESPACE_URI);
-            root.setAttribute("xmlns:xs", Constants.NAMESPACE_XMLSCHEMA);
-            root.setAttribute("xs:schemaLocation", Constants.NAMESPACE_URI
-                    + " " + "Localisation.xsd");
-            root.setAttribute("UserID", String.valueOf(userID));
-            root.setAttribute("RadiusKM", String.valueOf(radiusKM));
+        // Set DOM properties.
+        document.setXmlStandalone(true);
 
-            for (User neighbour : neighbours) {
-                Element user = createUser(neighbour);
-                root.appendChild(user);
-            }
+        // Create the DOM tree diagram.
+        Element root = document.createElement("LocalisationResponse");
+        document.appendChild(root);
+        root.setAttribute("xmlns", Constants.NAMESPACE_URI);
+        root.setAttribute("xmlns:xs", Constants.NAMESPACE_XMLSCHEMA);
+        root.setAttribute("xs:schemaLocation", Constants.NAMESPACE_URI + " "
+                + "Localisation.xsd");
+        root.setAttribute("UserID", String.valueOf(userID));
+        root.setAttribute("RadiusKM", String.valueOf(radiusKM));
 
-            return document.getDocumentElement();
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-            return null;
+        for (User neighbour : neighbours) {
+            Element user = createUser(neighbour);
+            root.appendChild(user);
         }
+
+        return document.getDocumentElement();
     }
 
     private Element createUser(User user) {

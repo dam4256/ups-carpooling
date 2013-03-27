@@ -1,6 +1,7 @@
 package fr.ups.carpooling.services.endpoints;
 
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
+import org.springframework.ws.server.endpoint.annotation.Namespace;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 import org.springframework.ws.server.endpoint.annotation.XPathParam;
@@ -24,14 +25,16 @@ public class RegistrationEndpoint {
     }
 
     @PayloadRoot(namespace = Constants.NAMESPACE_URI, localPart = "RegistrationRequest")
+    @Namespace(prefix = "cp", uri = Constants.NAMESPACE_URI)
     @ResponsePayload
     public Element handleRegistrationRequest(
-            @XPathParam("//LastName") String lastName,
-            @XPathParam("//FirstName") String firstName,
-            @XPathParam("//UPSMail") String upsMail,
-            @XPathParam("//Address") String address,
-            @XPathParam("//ZipCode") Integer zipCode,
-            @XPathParam("//Town") String town) throws Exception {
+            @XPathParam("/cp:RegistrationRequest/cp:LastName") String lastName,
+            @XPathParam("/cp:RegistrationRequest/cp:FirstName") String firstName,
+            @XPathParam("/cp:RegistrationRequest/cp:UPSMail") String upsMail,
+            @XPathParam("/cp:RegistrationRequest/cp:Address") String address,
+            @XPathParam("/cp:RegistrationRequest/cp:ZipCode") Integer zipCode,
+            @XPathParam("/cp:RegistrationRequest/cp:Town") String town)
+            throws Exception {
         // Create the teacher in search of a registration.
         User user = new User(lastName, firstName, upsMail, address, zipCode,
                 town);
