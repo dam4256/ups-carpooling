@@ -1,6 +1,6 @@
 package fr.ups.carpooling.services;
 
-import org.jdom.Element;
+import org.w3c.dom.Element;
 
 import fr.ups.carpooling.domain.User;
 
