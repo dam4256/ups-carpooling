@@ -57,7 +57,7 @@ User foo = new User(name,"ddsfsd", mail,address,zip,town);
         List<User> voisins = new ArrayList<User>();
         for(User f : ress)
         {
-            if(foo2.inrange(f,25.0) && (!f.equals(foo2)))
+            if(foo2.inrange(f,25) && (!f.equals(foo2)))
             {
                 voisins.add(f);
             }
