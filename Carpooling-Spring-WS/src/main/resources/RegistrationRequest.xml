@@ -5,6 +5,6 @@
 	<FirstName>John</FirstName>
 	<UPSMail>john.doe@univ-tlse3.fr</UPSMail>
 	<Address>118 route de Narbonne</Address>
-	<ZipCode>31062</ZipCode>
+	<ZipCode>31520</ZipCode>
 	<Town>Toulouse</Town>
 </RegistrationRequest>

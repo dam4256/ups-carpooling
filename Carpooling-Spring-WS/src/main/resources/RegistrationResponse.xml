@@ -5,7 +5,7 @@
         FirstName="John"
         UPSMail="john.doe@univ-tlse3.fr"
         Address="118 route de Narbonne"
-        ZipCode="31062"
+        ZipCode="31520"
         Town="Toulouse">
     <Result>KO</Result>
     <Code>100</Code>
