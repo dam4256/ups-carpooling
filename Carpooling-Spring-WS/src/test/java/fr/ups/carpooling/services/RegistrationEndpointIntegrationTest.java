@@ -42,33 +42,33 @@ public class RegistrationEndpointIntegrationTest {
         
         // Test 1: OK.
         requestPayload = new StreamSource(new ClassPathResource(
-                "RegistrationRequestOK.xml").getInputStream());
+                "/registration/RegistrationRequestOK.xml").getInputStream());
         responsePayload = new StreamSource(new ClassPathResource(
-                "RegistrationResponseOK.xml").getInputStream());
+                "/registration/RegistrationResponseOK.xml").getInputStream());
         mockClient.sendRequest(withPayload(requestPayload)).andExpect(
                 payload(responsePayload));
         
         // Test 2: KO 100.
         requestPayload = new StreamSource(new ClassPathResource(
-                "RegistrationRequestKO100.xml").getInputStream());
+                "/registration/RegistrationRequestKO100.xml").getInputStream());
         responsePayload = new StreamSource(new ClassPathResource(
-                "RegistrationResponseKO100.xml").getInputStream());
+                "/registration/RegistrationResponseKO100.xml").getInputStream());
         mockClient.sendRequest(withPayload(requestPayload)).andExpect(
                 payload(responsePayload));
         
         // Test 3: KO 110.
         requestPayload = new StreamSource(new ClassPathResource(
-                "RegistrationRequestKO110.xml").getInputStream());
+                "/registration/RegistrationRequestKO110.xml").getInputStream());
         responsePayload = new StreamSource(new ClassPathResource(
-                "RegistrationResponseKO110.xml").getInputStream());
+                "/registration/RegistrationResponseKO110.xml").getInputStream());
         mockClient.sendRequest(withPayload(requestPayload)).andExpect(
                 payload(responsePayload));
         
         // Test 4: KO 200.
         requestPayload = new StreamSource(new ClassPathResource(
-                "RegistrationRequestKO200.xml").getInputStream());
+                "/registration/RegistrationRequestKO200.xml").getInputStream());
         responsePayload = new StreamSource(new ClassPathResource(
-                "RegistrationResponseKO200.xml").getInputStream());
+                "/registration/RegistrationResponseKO200.xml").getInputStream());
         mockClient.sendRequest(withPayload(requestPayload)).andExpect(
                 payload(responsePayload));
     }
