@@ -111,15 +111,15 @@ public class RegistrationServiceImpl implements RegistrationService {
             return false;
         }
         if (osmNodesInVicinity.size() > 1) {
-            result = "KO";
-            code = 200;
-            error = "Adresse postale pas assez precise, plusieurs resultats possibles";
-            return false;
+            user.setLatitude(osmNodesInVicinity.get(0).getLat());
+            user.setLongitude(osmNodesInVicinity.get(0).getLon());
+            //ignore le fait qu'il y ait plusieurs réponses car l'adresse fournie est supposée complète
+            return true;
         }
         if (osmNodesInVicinity.size() == 1)
             for (OSMNode osmNode : osmNodesInVicinity) {
-                System.out.println(osmNode.getId() + ":" + osmNode.getLat()
-                        + ":" + osmNode.getLon());
+                /*System.out.println(osmNode.getId() + ":" + osmNode.getLat()
+                        + ":" + osmNode.getLon()); */
                 user.setLatitude(osmNode.getLat());
                 user.setLongitude(osmNode.getLon());
             }
