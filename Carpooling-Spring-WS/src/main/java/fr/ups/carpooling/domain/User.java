@@ -6,7 +6,7 @@ package fr.ups.carpooling.domain;
  */
 public class User {
 
-    private String id;
+    private Integer _id;
     private String lastName;
     private String firstName;
     private String mail;
@@ -54,8 +54,8 @@ public class User {
         return longitude;
     }
 
-    public String getId() {
-        return id;
+    public Integer getId() {
+        return _id;
     }
 
     public String getLastName() {
@@ -73,7 +73,7 @@ public class User {
     @Override
     public String toString() {
         return new StringBuilder().append("User{").append("_id='")
-                .append(id).append('\'').append(", name='").append(lastName)
+                .append(_id).append('\'').append(", name='").append(lastName)
                 .append('\'').append(", fname='").append(firstName)
                 .append('\'').append(", mail='").append(mail).append('\'')
                 .append(", address='").append(address).append('\'')
@@ -123,9 +123,13 @@ public class User {
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof User) {
-            return this.id.equals(((User) obj).id);
+            return this._id.equals(((User) obj)._id);
         } else {
             return false;
         }
+    }
+
+    public void setId(Integer id) {
+        this._id = id;
     }
 }
