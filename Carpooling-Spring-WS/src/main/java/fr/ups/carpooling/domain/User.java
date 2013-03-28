@@ -7,6 +7,7 @@ package fr.ups.carpooling.domain;
 public class User {
 
     private String _id;
+    private String _rev;
     private String lastName;
     private String firstName;
     private String mail;
