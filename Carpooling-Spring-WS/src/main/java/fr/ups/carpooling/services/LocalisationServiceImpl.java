@@ -37,7 +37,7 @@ public class LocalisationServiceImpl implements LocalisationService {
         this.userID = userID;
         this.radiusKM = radiusKM;
         dbClient =new CouchDbClient();
-         current=dbClient.find(User.class,Integer.toString(userID));
+        current=dbClient.find(User.class,Integer.toString(userID));
         View users =dbClient.view("application/viewusers");
         users.includeDocs(true);
         potentialneighbours = users.query(User.class);
