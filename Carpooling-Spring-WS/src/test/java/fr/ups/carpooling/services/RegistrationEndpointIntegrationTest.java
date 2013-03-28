@@ -32,6 +32,7 @@ public class RegistrationEndpointIntegrationTest {
     @Before
     public void createClient() {
         mockClient = MockWebServiceClient.createClient(applicationContext);
+        //initialisation de la base de données
     }
 
     @Test
