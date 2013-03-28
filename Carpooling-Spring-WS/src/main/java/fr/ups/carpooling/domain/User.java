@@ -113,7 +113,7 @@ public class User {
         return (rad * 180 / Math.PI);
     }
 
-    public Boolean inrange(User voisin, Double range) {
+    public Boolean inrange(User voisin, Integer range) {
         Double dist = this.distance(Double.valueOf(voisin.getLatitude()),
                 Double.valueOf(voisin.getLongitude()));
         System.out.println(dist);
