@@ -1,10 +1,10 @@
 <RegistrationRequest xmlns="http://ups/fr/carpooling/schemas"
         xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
         xs:schemaLocation="http://ups/fr/carpooling/schemas Registration.xsd">
-    <LastName>Doe</LastName>
-	<FirstName>John</FirstName>
-	<UPSMail>john.doe@univ-tlse3.fr</UPSMail>
-	<Address>118 route de Narbonne</Address>
-	<ZipCode>31062</ZipCode>
+    <LastName>Fielding</LastName>
+	<FirstName>Roy</FirstName>
+	<UPSMail>john.doe@rest.fr</UPSMail>
+	<Address>5 rue Claude Gonin</Address>
+	<ZipCode>31400</ZipCode>
 	<Town>Toulouse</Town>
 </RegistrationRequest>
