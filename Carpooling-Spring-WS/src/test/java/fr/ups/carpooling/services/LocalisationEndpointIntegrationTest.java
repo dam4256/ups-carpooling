@@ -9,12 +9,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.lightcouch.CouchDbClient;
+import org.lightcouch.View;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.ws.test.server.MockWebServiceClient;
+
+import java.util.List;
 
 import static org.springframework.ws.test.server.RequestCreators.withPayload;
 import static org.springframework.ws.test.server.ResponseMatchers.payload;
@@ -39,6 +42,13 @@ public class LocalisationEndpointIntegrationTest {
         mockClient = MockWebServiceClient.createClient(applicationContext);
         //Initialisation de la base de données
         CouchDbClient dbClient = new CouchDbClient();
+        View users =dbClient.view("application/viewusers");
+        users.includeDocs(true);
+        List<User> potentialneighbours = users.query(User.class);
+        for(User voisin : potentialneighbours)
+        {
+            dbClient.remove(voisin);
+        }
         User tempuser = new User("DURBAN","Romain","durban.romain@univ-tlse3.fr","Allée des sciences appliquées",31100,"Toulouse");
         tempuser.setId("1");
         try {
