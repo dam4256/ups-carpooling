@@ -6,7 +6,7 @@ package fr.ups.carpooling.domain;
  */
 public class User {
 
-    private Integer _id;
+    private String _id;
     private String lastName;
     private String firstName;
     private String mail;
@@ -54,7 +54,7 @@ public class User {
         return longitude;
     }
 
-    public Integer getId() {
+    public String getId() {
         return _id;
     }
 
@@ -83,7 +83,35 @@ public class User {
                 .append('\'').append('}').toString();
     }
 
-    private double distance(double lat2, double lon2) {
+
+    //calcul de la distance 3D conçue par partir-en-vtt.com
+    private double distance(double lat2, double lon2)
+    {
+        double lat1,lon1,alt1,alt2;
+        //rayon de la terre
+        int r = 6366;
+        lat1 = deg2rad(Double.valueOf(this.latitude));
+        lat2 = deg2rad(lat2);
+        lon1 = deg2rad(Double.valueOf(this.longitude));
+        lon2 = deg2rad(lon2);
+
+        //recuperation altitude en km
+        alt1 =0;
+        alt2 =0;
+
+        //calcul précis
+        double dp= 2 * Math.asin(Math.sqrt(Math.pow (Math.sin((lat1-lat2)/2) , 2) + Math.cos(lat1)*Math.cos(lat2)* Math.pow( Math.sin((lon1-lon2)/2) , 2)));
+
+        //sortie en km
+        double d = dp * r;
+
+        //Pythagore a dit que :
+        double dist = Math.sqrt(Math.pow(d,2)+Math.pow(alt2-alt1,2));
+
+        return dist;
+    }
+
+    /*private double distance(double lat2, double lon2) {
         double theta = Double.valueOf(this.longitude) - lon2;
         double dist = Math.sin(deg2rad(Double.valueOf(this.latitude)))
                 * Math.sin(deg2rad(lat2))
@@ -94,7 +122,7 @@ public class User {
         dist = dist * 60 * 1.1515;
         dist = dist * 1.609344;
         return (dist);
-    }
+    }    */
 
     /* ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: */
     /* :: This function converts decimal degrees to radians : */
@@ -105,13 +133,7 @@ public class User {
 
     }
 
-    /* ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: */
-    /* :: This function converts radians to decimal degrees : */
-    /* ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: */
 
-    private double rad2deg(double rad) {
-        return (rad * 180 / Math.PI);
-    }
 
     public Boolean inrange(User voisin, Integer range) {
         Double dist = this.distance(Double.valueOf(voisin.getLatitude()),
@@ -129,7 +151,7 @@ public class User {
         }
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this._id = id;
     }
 }
