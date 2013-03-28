@@ -1,11 +1,18 @@
 package fr.ups.carpooling.services;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.lightcouch.CouchDbClient;
 import org.lightcouch.View;
@@ -36,7 +43,7 @@ public class LocalisationServiceImpl implements LocalisationService {
         potentialneighbours = users.query(User.class);
         for(User voisin : potentialneighbours)
         {
-            if(current.inrange(voisin,radiusKM) && (current.equals(voisin)))
+            if(current.inrange(voisin,radiusKM) && (!current.equals(voisin)))
             {
                 neighbours.add(voisin);
             }
@@ -73,6 +80,26 @@ public class LocalisationServiceImpl implements LocalisationService {
             Element user = createUser(neighbour);
             root.appendChild(user);
         }
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = null;
+        try {
+            transformer = transformerFactory.newTransformer();
+        } catch (TransformerConfigurationException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        DOMSource source = new DOMSource(document);
+        StreamResult result = new StreamResult(new File("file.xml"));
+
+        // Output to console for testing
+        // StreamResult result = new StreamResult(System.out);
+
+        try {
+            transformer.transform(source, result);
+        } catch (TransformerException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+        System.out.println("File saved!");
 
         return document.getDocumentElement();
     }
