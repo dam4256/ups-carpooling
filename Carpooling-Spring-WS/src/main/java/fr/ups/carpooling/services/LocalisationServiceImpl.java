@@ -7,6 +7,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.lightcouch.CouchDbClient;
+import org.lightcouch.View;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -16,18 +18,32 @@ import fr.ups.carpooling.domain.constants.Constants;
 public class LocalisationServiceImpl implements LocalisationService {
 
     private Document document;
-
+    private User current;
     private Integer userID;
     private Integer radiusKM;
+    private CouchDbClient dbClient;
 
     public Element searchForNeighbours(Integer userID, Integer radiusKM)
             throws ParserConfigurationException {
         List<User> neighbours = new ArrayList<User>();
+        List<User> potentialneighbours= new ArrayList<User>();
         this.userID = userID;
         this.radiusKM = radiusKM;
+        dbClient =new CouchDbClient();
+         current=dbClient.find(User.class,Integer.toString(userID));
+        View users =dbClient.view("application/viewusers");
+        users.includeDocs(true);
+        potentialneighbours = users.query(User.class);
+        for(User voisin : potentialneighbours)
+        {
+            if(current.inrange(voisin,radiusKM) && (current.equals(voisin)))
+            {
+                neighbours.add(voisin);
+            }
+        }
 
         // Complete neighbours.
-        // ... Met ton code là!
+        // ... Met ton code lï¿½!
 
         // Return the response.
         return createResponse(neighbours);
