@@ -89,9 +89,9 @@ public class LocalisationEndpointIntegrationTest {
     @Test
     public void localisationEndpoint() throws Exception {
         Source requestPayload = new StreamSource(new ClassPathResource(
-                "LocalisationRequest.xml").getInputStream());
+                "localisation/LocalisationRequest.xml").getInputStream());
         Source responsePayload = new StreamSource(new ClassPathResource(
-                "LocalisationResponse.xml").getInputStream());
+                "localisation/LocalisationResponse.xml").getInputStream());
 
         mockClient.sendRequest(withPayload(requestPayload)).andExpect(
                 payload(responsePayload));
