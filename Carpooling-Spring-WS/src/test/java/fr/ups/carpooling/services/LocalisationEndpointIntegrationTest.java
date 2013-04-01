@@ -84,8 +84,6 @@ public class LocalisationEndpointIntegrationTest {
         } catch (ParserConfigurationException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
-
-
     }
 
     @Test
