@@ -15,4 +15,16 @@
         <constructor-arg name="localisationService" ref="localisationService"/>
     </bean>
     <bean id="localisationService" class="fr.ups.carpooling.services.LocalisationServiceImpl"/>
+    <sws:dynamic-wsdl id="registration"                                                           
+        portTypeName="Carpooling"                                                         
+        locationUri="/registrationService/"                                                       
+        targetNamespace="http://ups/fr/carpooling/definitions">                               
+        <sws:xsd location="/WEB-INF/xsd/Registration.xsd"/>                                                  
+    </sws:dynamic-wsdl>
+    <sws:dynamic-wsdl id="localisation"                                                           
+        portTypeName="Carpooling"                                                         
+        locationUri="/localisationService/"                                                       
+        targetNamespace="http://ups/fr/carpooling/definitions">                               
+        <sws:xsd location="/WEB-INF/xsd/Localisation.xsd"/>
+    </sws:dynamic-wsdl>
 </beans>
