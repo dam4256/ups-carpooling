@@ -77,7 +77,7 @@ public class LocalisationEndpointIntegrationTest {
         rs.register(tempuser);
 
         // User 5.
-        tempuser = new User("Cherbonnaud", "Bernard",
+        tempuser = new User("Cherbonneau", "Bernard",
                 "bernard.cherbonneau@univ-tlse3.fr", "rue d'alger", 31500,
                 "Toulouse");
         tempuser.setId("5");

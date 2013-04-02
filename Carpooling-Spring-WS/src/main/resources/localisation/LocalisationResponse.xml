@@ -15,14 +15,14 @@
         <LastName>Massie</LastName>
         <FirstName>Henry</FirstName>
         <UPSMail>henry.massie@univ-tlse3.fr</UPSMail>
-        <Address>rue rue sylvain dauriac</Address>
+        <Address>rue sylvain dauriac</Address>
         <ZipCode>31506</ZipCode>
         <Town>Toulouse</Town>
     </User>
     <User>
-        <LastName>Cherbonnaud</LastName>
+        <LastName>Cherbonneau</LastName>
         <FirstName>Bernard</FirstName>
-        <UPSMail>bernard.cherbonnaud@univ-tlse3.fr</UPSMail>
+        <UPSMail>bernard.cherbonneau@univ-tlse3.fr</UPSMail>
         <Address>rue d'alger</Address>
         <ZipCode>31500</ZipCode>
         <Town>Toulouse</Town>
