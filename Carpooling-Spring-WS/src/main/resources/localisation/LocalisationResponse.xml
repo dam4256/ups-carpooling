@@ -4,25 +4,25 @@
         UserID="1"
         RadiusKM="5">
     <User>
-        <LastName>SYLVESTRE</LastName>
+        <LastName>Silvestre</LastName>
         <FirstName>Franck</FirstName>
-        <UPSMail>sylvestre.franck@univ-tlse3.fr</UPSMail>
+        <UPSMail>franck.silvestre@univ-tlse3.fr</UPSMail>
         <Address>118 route de Narbonne</Address>
         <ZipCode>31520</ZipCode>
         <Town>Toulouse</Town>
     </User>
     <User>
-        <LastName>MASSIE</LastName>
+        <LastName>Massie</LastName>
         <FirstName>Henry</FirstName>
-        <UPSMail>massie.henry@univ-tlse3.fr</UPSMail>
+        <UPSMail>henry.massie@univ-tlse3.fr</UPSMail>
         <Address>rue rue sylvain dauriac</Address>
         <ZipCode>31506</ZipCode>
         <Town>Toulouse</Town>
     </User>
     <User>
-        <LastName>CHERBONNAUD</LastName>
+        <LastName>Cherbonnaud</LastName>
         <FirstName>Bernard</FirstName>
-        <UPSMail>cherbonneau.bernard@univ-tlse3.fr</UPSMail>
+        <UPSMail>bernard.cherbonnaud@univ-tlse3.fr</UPSMail>
         <Address>rue d'alger</Address>
         <ZipCode>31500</ZipCode>
         <Town>Toulouse</Town>

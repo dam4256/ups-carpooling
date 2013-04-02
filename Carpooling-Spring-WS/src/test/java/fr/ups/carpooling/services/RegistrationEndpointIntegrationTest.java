@@ -32,14 +32,13 @@ public class RegistrationEndpointIntegrationTest {
     @Before
     public void createClient() {
         mockClient = MockWebServiceClient.createClient(applicationContext);
-        //initialisation de la base de données
     }
 
     @Test
     public void registrationEndpoint() throws Exception {
         Source requestPayload;
         Source responsePayload;
-        
+
         // Test 1: OK.
         requestPayload = new StreamSource(new ClassPathResource(
                 "/registration/RegistrationRequestOK.xml").getInputStream());
@@ -47,7 +46,7 @@ public class RegistrationEndpointIntegrationTest {
                 "/registration/RegistrationResponseOK.xml").getInputStream());
         mockClient.sendRequest(withPayload(requestPayload)).andExpect(
                 payload(responsePayload));
-        
+
         // Test 2: KO 100.
         requestPayload = new StreamSource(new ClassPathResource(
                 "/registration/RegistrationRequestKO100.xml").getInputStream());
@@ -55,7 +54,7 @@ public class RegistrationEndpointIntegrationTest {
                 "/registration/RegistrationResponseKO100.xml").getInputStream());
         mockClient.sendRequest(withPayload(requestPayload)).andExpect(
                 payload(responsePayload));
-        
+
         // Test 3: KO 110.
         requestPayload = new StreamSource(new ClassPathResource(
                 "/registration/RegistrationRequestKO110.xml").getInputStream());
@@ -63,7 +62,7 @@ public class RegistrationEndpointIntegrationTest {
                 "/registration/RegistrationResponseKO110.xml").getInputStream());
         mockClient.sendRequest(withPayload(requestPayload)).andExpect(
                 payload(responsePayload));
-        
+
         // Test 4: KO 200.
         requestPayload = new StreamSource(new ClassPathResource(
                 "/registration/RegistrationRequestKO200.xml").getInputStream());
@@ -72,4 +71,5 @@ public class RegistrationEndpointIntegrationTest {
         mockClient.sendRequest(withPayload(requestPayload)).andExpect(
                 payload(responsePayload));
     }
+    
 }

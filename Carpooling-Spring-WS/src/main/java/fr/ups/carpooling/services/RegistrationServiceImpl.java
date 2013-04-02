@@ -23,15 +23,32 @@ import fr.ups.carpooling.domain.constants.Constants;
  */
 public class RegistrationServiceImpl implements RegistrationService {
 
+    /**
+     * CouchDB Client.
+     */
     private CouchDbClient dbClient;
 
+    /**
+     * XML document.
+     */
     private Document document;
 
+    /**
+     * Result (OK / KO).
+     */
     private String result;
+
+    /**
+     * Code (100 / 110 / 200 / 300). May be null.
+     */
     private Integer code;
+
+    /**
+     * Error associated with the code. May be null.
+     */
     private String error;
 
-    public Element register(User user) throws ParserConfigurationException {
+    public Element register(User user) throws Exception {
         // Set up the CouchDB database.
         dbClient = new CouchDbClient();
 
@@ -68,13 +85,12 @@ public class RegistrationServiceImpl implements RegistrationService {
      * @return <code>true</code> if the user is valid; <code>false</code>
      *         otherwise
      */
-    private boolean isValidConstraints(User user) {
+    private boolean isValidConstraints(User user) throws Exception {
         // Verify that the email address is free.
         View view = dbClient.view("application/viewmail");
         view.includeDocs(true);
         view.key(user.getMail());
         List<User> users = view.query(User.class);
-        System.out.println(users.size());
         if (users.size() > 0) {
             result = "KO";
             code = 100;
@@ -83,7 +99,6 @@ public class RegistrationServiceImpl implements RegistrationService {
         }
 
         // Verify that the email address is valid.
-        // System.out.println(user.getMail().endsWith("@univ-tlse3.fr"));
         if (!user.getMail().endsWith("@univ-tlse3.fr")) {
             result = "KO";
             code = 110;
@@ -95,34 +110,22 @@ public class RegistrationServiceImpl implements RegistrationService {
         String url = Constants.OPENSTREETMAP_URL + user.getAddress() + " "
                 + user.getZip() + " " + user.getTown()
                 + Constants.OPENSTREETMAP_ENDING;
-        // System.out.println(url);
+        ;
         List<OSMNode> osmNodesInVicinity = null;
-        try {
-            osmNodesInVicinity = OSMWrapperAPI.getNodes(OSMWrapperAPI
-                    .getXMLFile(url));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        // System.out.println(osmNodesInVicinity.size());
+        osmNodesInVicinity = OSMWrapperAPI.getNodes(OSMWrapperAPI
+                .getXMLFile(url));
         if (osmNodesInVicinity == null || osmNodesInVicinity.size() == 0) {
             result = "KO";
             code = 200;
             error = "Adresse postale non connue de Open Street Map";
             return false;
         }
-        if (osmNodesInVicinity.size() > 1) {
+
+        // Get the first OSM node, even if there are several responses.
+        if (osmNodesInVicinity.size() > 1 || osmNodesInVicinity.size() == 1) {
             user.setLatitude(osmNodesInVicinity.get(0).getLat());
             user.setLongitude(osmNodesInVicinity.get(0).getLon());
-            //ignore le fait qu'il y ait plusieurs réponses car l'adresse fournie est supposée complète
-            return true;
         }
-        if (osmNodesInVicinity.size() == 1)
-            for (OSMNode osmNode : osmNodesInVicinity) {
-                /*System.out.println(osmNode.getId() + ":" + osmNode.getLat()
-                        + ":" + osmNode.getLon()); */
-                user.setLatitude(osmNode.getLat());
-                user.setLongitude(osmNode.getLon());
-            }
 
         // Return true if every constraint is compliant.
         return true;
@@ -134,9 +137,10 @@ public class RegistrationServiceImpl implements RegistrationService {
      * @param user
      *            the user associated with the request
      * @return the XML element completed
-     * @throws ParserConfigurationException  
+     * @throws ParserConfigurationException
      */
-    private Element createResponse(User user) throws ParserConfigurationException {
+    private Element createResponse(User user)
+            throws ParserConfigurationException {
         // Create a new DOM.
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();

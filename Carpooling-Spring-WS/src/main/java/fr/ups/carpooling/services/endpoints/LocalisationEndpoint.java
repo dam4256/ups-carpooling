@@ -17,12 +17,31 @@ import fr.ups.carpooling.services.LocalisationService;
 @Endpoint
 public class LocalisationEndpoint {
 
+    /**
+     * Service associated with the endpoint.
+     */
     private LocalisationService localisationService;
 
+    /**
+     * Create the endpoint.
+     * 
+     * @param localisationService
+     *            the service associated with
+     */
     public LocalisationEndpoint(LocalisationService localisationService) {
         this.localisationService = localisationService;
     }
 
+    /**
+     * Process request.
+     * 
+     * @param userID
+     *            the user ID in the database
+     * @param radiusKM
+     *            the radius in kilometers
+     * @return the service response
+     * @throws Exception
+     */
     @PayloadRoot(namespace = Constants.NAMESPACE_URI, localPart = "LocalisationRequest")
     @Namespace(prefix = "cp", uri = Constants.NAMESPACE_URI)
     @ResponsePayload

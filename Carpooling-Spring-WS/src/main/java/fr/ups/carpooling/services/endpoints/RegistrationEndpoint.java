@@ -18,12 +18,39 @@ import fr.ups.carpooling.services.RegistrationService;
 @Endpoint
 public class RegistrationEndpoint {
 
+    /**
+     * Service associated with the endpoint.
+     */
     private RegistrationService registrationService;
 
+    /**
+     * Create the endpoint.
+     * 
+     * @param registrationService
+     *            the service associated with
+     */
     public RegistrationEndpoint(RegistrationService registrationService) {
         this.registrationService = registrationService;
     }
 
+    /**
+     * Process request.
+     * 
+     * @param lastName
+     *            the last name of the user
+     * @param firstName
+     *            the first name of the user
+     * @param upsMail
+     *            the mail of the user
+     * @param address
+     *            the mailing address of the user
+     * @param zipCode
+     *            the zip code of the user
+     * @param town
+     *            the town of the user
+     * @return the service response
+     * @throws Exception
+     */
     @PayloadRoot(namespace = Constants.NAMESPACE_URI, localPart = "RegistrationRequest")
     @Namespace(prefix = "cp", uri = Constants.NAMESPACE_URI)
     @ResponsePayload

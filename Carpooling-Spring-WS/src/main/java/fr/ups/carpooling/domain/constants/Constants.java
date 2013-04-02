@@ -1,5 +1,9 @@
 package fr.ups.carpooling.domain.constants;
 
+/**
+ * @author Kevin ANATOLE
+ * @author Damien ARONDEL
+ */
 public class Constants {
     
     public static final String NAMESPACE_URI = "http://ups/fr/carpooling/schemas";

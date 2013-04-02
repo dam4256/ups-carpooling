@@ -1,5 +1,5 @@
 /*
- * (c) Jens Kübler
+ * (c) Jens Kubler
  * This software is public domain
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -16,13 +16,9 @@
  */
 package fr.ups.carpooling.domain;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
@@ -49,55 +45,16 @@ import fr.ups.carpooling.domain.constants.Constants;
  */
 public class OSMWrapperAPI {
 
-    public static OSMNode getNode(String nodeId) throws IOException,
-            ParserConfigurationException, SAXException {
-        String string = Constants.OPENSTREETMAP_API_06 + "node/" + nodeId;
-        URL osm = new URL(string);
-        HttpURLConnection connection = (HttpURLConnection) osm.openConnection();
-
-        DocumentBuilderFactory dbfac = DocumentBuilderFactory.newInstance();
-        DocumentBuilder docBuilder = dbfac.newDocumentBuilder();
-        Document document = docBuilder.parse(connection.getInputStream());
-        List<OSMNode> nodes = getNodes(document);
-        if (!nodes.isEmpty()) {
-            return nodes.iterator().next();
-        }
-        return null;
-    }
-
     /**
-     * @param lon
-     *            the longitude
-     * @param lat
-     *            the latitude
-     * @param vicinityRange
-     *            bounding box in this range
-     * @return the xml document containing the queries nodes
-     * @throws IOException
-     * @throws SAXException
+     * Get the XML file from an URI.
+     * 
+     * @param location
+     *            the URI
+     * @return the XML document
      * @throws ParserConfigurationException
+     * @throws SAXException
+     * @throws IOException
      */
-    @SuppressWarnings("nls")
-    private static Document getXML(double lon, double lat, double vicinityRange)
-            throws IOException, SAXException, ParserConfigurationException {
-
-        DecimalFormat format = new DecimalFormat(
-                "##0.0000000", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
-        String left = format.format(lat - vicinityRange);
-        String bottom = format.format(lon - vicinityRange);
-        String right = format.format(lat + vicinityRange);
-        String top = format.format(lon + vicinityRange);
-
-        String string = Constants.OPENSTREETMAP_API_06 + "map?bbox=" + left + ","
-                + bottom + "," + right + "," + top;
-        URL osm = new URL(string);
-        HttpURLConnection connection = (HttpURLConnection) osm.openConnection();
-
-        DocumentBuilderFactory dbfac = DocumentBuilderFactory.newInstance();
-        DocumentBuilder docBuilder = dbfac.newDocumentBuilder();
-        return docBuilder.parse(connection.getInputStream());
-    }
-
     public static Document getXMLFile(String location)
             throws ParserConfigurationException, SAXException, IOException {
         DocumentBuilderFactory dbfac = DocumentBuilderFactory.newInstance();
@@ -106,14 +63,16 @@ public class OSMWrapperAPI {
     }
 
     /**
+     * Get nodes of a OSM XML document.
+     * 
      * @param xmlDocument
-     * @return a list of openseamap nodes extracted from xml
+     *            the OSM XML document
+     * @return a list of OSM nodes extracted from the XML document
      */
     @SuppressWarnings("nls")
     public static List<OSMNode> getNodes(Document xmlDocument) {
         List<OSMNode> osmNodes = new ArrayList<OSMNode>();
 
-        // Document xml = getXML(8.32, 49.001);
         Node osmRoot = xmlDocument.getFirstChild();
         NodeList osmXMLNodes = osmRoot.getChildNodes();
         for (int i = 1; i < osmXMLNodes.getLength(); i++) {
@@ -151,6 +110,20 @@ public class OSMWrapperAPI {
         return osmNodes;
     }
 
+    /**
+     * Get OSM nodes in vicinity, according to a latitude and a longitude.
+     * 
+     * @param lat
+     *            the latitude
+     * @param lon
+     *            the longitude
+     * @param vicinityRange
+     *            the radius
+     * @return the OSM nodes in vicinity
+     * @throws IOException
+     * @throws SAXException
+     * @throws ParserConfigurationException
+     */
     public static List<OSMNode> getOSMNodesInVicinity(double lat, double lon,
             double vicinityRange) throws IOException, SAXException,
             ParserConfigurationException {
@@ -158,77 +131,38 @@ public class OSMWrapperAPI {
     }
 
     /**
+     * Get the list of OSM nodes in XML file.
      * 
-     * @param query
-     *            the overpass query
-     * @return the nodes in the formulated query
+     * @param lon
+     *            the longitude
+     * @param lat
+     *            the latitude
+     * @param vicinityRange
+     *            bounding box in this range
+     * @return the XML document containing the queries nodes
      * @throws IOException
-     * @throws ParserConfigurationException
      * @throws SAXException
+     * @throws ParserConfigurationException
      */
-    public static Document getNodesViaOverpass(String query)
-            throws IOException, ParserConfigurationException, SAXException {
-        String hostname = Constants.OVERPASS_API;
-        String queryString = readFileAsString(query);
+    @SuppressWarnings("nls")
+    private static Document getXML(double lon, double lat, double vicinityRange)
+            throws IOException, SAXException, ParserConfigurationException {
 
-        URL osm = new URL(hostname);
+        DecimalFormat format = new DecimalFormat("##0.0000000",
+                DecimalFormatSymbols.getInstance(Locale.ENGLISH));
+        String left = format.format(lat - vicinityRange);
+        String bottom = format.format(lon - vicinityRange);
+        String right = format.format(lat + vicinityRange);
+        String top = format.format(lon + vicinityRange);
+
+        String string = Constants.OPENSTREETMAP_API_06 + "map?bbox=" + left
+                + "," + bottom + "," + right + "," + top;
+        URL osm = new URL(string);
         HttpURLConnection connection = (HttpURLConnection) osm.openConnection();
-        connection.setDoInput(true);
-        connection.setDoOutput(true);
-        connection.setRequestProperty("Content-Type",
-                "application/x-www-form-urlencoded");
-
-        DataOutputStream printout = new DataOutputStream(
-                connection.getOutputStream());
-        printout.writeBytes("data=" + URLEncoder.encode(queryString, "utf-8"));
-        printout.flush();
-        printout.close();
 
         DocumentBuilderFactory dbfac = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = dbfac.newDocumentBuilder();
         return docBuilder.parse(connection.getInputStream());
-    }
-
-    /**
-     * @param filePath
-     * @return
-     * @throws java.io.IOException
-     */
-    private static String readFileAsString(String filePath)
-            throws java.io.IOException {
-        StringBuffer fileData = new StringBuffer(1000);
-        BufferedReader reader = new BufferedReader(new FileReader(filePath));
-        char[] buf = new char[1024];
-        int numRead = 0;
-        while ((numRead = reader.read(buf)) != -1) {
-            String readData = String.valueOf(buf, 0, numRead);
-            fileData.append(readData);
-            buf = new char[1024];
-        }
-        reader.close();
-        return fileData.toString();
-    }
-
-    /**
-     * main method that simply reads some nodes
-     * 
-     * @param args
-     * @throws IOException
-     * @throws SAXException
-     * @throws ParserConfigurationException
-     */
-    public static void main(String[] args) throws IOException, SAXException,
-            ParserConfigurationException {
-        /*
-         * Authenticator.setDefault(new Authenticator() { });
-         * Authenticator.setDefault(new BasicAuthenticator("youruser",
-         * "yourpassword"));
-         */
-        List<OSMNode> osmNodesInVicinity = getOSMNodesInVicinity(49, 8.3, 0.005);
-        for (OSMNode osmNode : osmNodesInVicinity) {
-            System.out.println(osmNode.getId() + ":" + osmNode.getLat() + ":"
-                    + osmNode.getLon());
-        }
     }
 
 }

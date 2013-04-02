@@ -17,8 +17,8 @@ public class User {
     private String latitude = "0";
     private String longitude = "0";
 
-    public User(String lastName, String firstName, String mail,
-            String address, int zip, String town) {
+    public User(String lastName, String firstName, String mail, String address,
+            int zip, String town) {
         this.lastName = lastName;
         this.firstName = firstName;
         this.mail = mail;
@@ -27,6 +27,10 @@ public class User {
         this.town = town;
     }
 
+    public void setId(String id) {
+        this._id = id;
+    }
+    
     public void setLatitude(String latitude) {
         this.latitude = latitude;
     }
@@ -71,75 +75,73 @@ public class User {
         return mail;
     }
 
-    @Override
-    public String toString() {
-        return new StringBuilder().append("User{").append("_id='")
-                .append(_id).append('\'').append(", name='").append(lastName)
-                .append('\'').append(", fname='").append(firstName)
-                .append('\'').append(", mail='").append(mail).append('\'')
-                .append(", address='").append(address).append('\'')
-                .append(", zip=").append(zip).append(", Town='").append(town)
-                .append('\'').append(", latitude='").append(latitude)
-                .append('\'').append(", longitude='").append(longitude)
-                .append('\'').append('}').toString();
-    }
+    /**
+     * Calculate the 3D distance between two sets of coordinates. Extracted from
+     * partir-en-vtt.com.
+     * 
+     * @param lat2
+     *            the latitude of the other user
+     * @param lon2
+     *            the longitude of the other user
+     * @return the distance in kilometers
+     */
+    private double distance(double lat2, double lon2) {
+        double lat1, lon1, alt1, alt2;
 
-
-    //calcul de la distance 3D conçue par partir-en-vtt.com
-    private double distance(double lat2, double lon2)
-    {
-        double lat1,lon1,alt1,alt2;
-        //rayon de la terre
+        // Get the Earth radius.
         int r = 6366;
+
+        // Convert latitude and longitude in radians.
         lat1 = deg2rad(Double.valueOf(this.latitude));
         lat2 = deg2rad(lat2);
         lon1 = deg2rad(Double.valueOf(this.longitude));
         lon2 = deg2rad(lon2);
 
-        //recuperation altitude en km
-        alt1 =0;
-        alt2 =0;
+        // Get the altitude in kilometers.
+        alt1 = 0;
+        alt2 = 0;
 
-        //calcul précis
-        double dp= 2 * Math.asin(Math.sqrt(Math.pow (Math.sin((lat1-lat2)/2) , 2) + Math.cos(lat1)*Math.cos(lat2)* Math.pow( Math.sin((lon1-lon2)/2) , 2)));
+        // Calculate accurately.
+        double dp = 2 * Math.asin(Math.sqrt(Math.pow(
+                Math.sin((lat1 - lat2) / 2), 2)
+                + Math.cos(lat1)
+                * Math.cos(lat2)
+                * Math.pow(Math.sin((lon1 - lon2) / 2), 2)));
 
-        //sortie en km
+        // Calculate the output in kilometers.
         double d = dp * r;
 
-        //Pythagore a dit que :
-        double dist = Math.sqrt(Math.pow(d,2)+Math.pow(alt2-alt1,2));
+        // Refer to Pythagorus.
+        double dist = Math.sqrt(Math.pow(d, 2) + Math.pow(alt2 - alt1, 2));
 
         return dist;
     }
 
-    /*private double distance(double lat2, double lon2) {
-        double theta = Double.valueOf(this.longitude) - lon2;
-        double dist = Math.sin(deg2rad(Double.valueOf(this.latitude)))
-                * Math.sin(deg2rad(lat2))
-                + Math.cos(deg2rad(Double.valueOf(this.latitude)))
-                * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
-        dist = Math.acos(dist);
-        dist = rad2deg(dist);
-        dist = dist * 60 * 1.1515;
-        dist = dist * 1.609344;
-        return (dist);
-    }    */
-
-    /* ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: */
-    /* :: This function converts decimal degrees to radians : */
-    /* ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: */
-
+    /**
+     * Convert decimal degrees to radians.
+     * 
+     * @param deg
+     *            the decimal degrees
+     * @return the radians
+     */
     private double deg2rad(double deg) {
         return (deg * Math.PI / 180.0);
 
     }
 
-
-
-    public Boolean inrange(User voisin, Integer range) {
-        Double dist = this.distance(Double.valueOf(voisin.getLatitude()),
-                Double.valueOf(voisin.getLongitude()));
-        System.out.println(dist);
+    /**
+     * Check if a user is in vicinity of the current one.
+     * 
+     * @param neighbour
+     *            the user to compare with
+     * @param range
+     *            the radius in kilometers
+     * @return <code>true</code> if the users are in range; <code>false</code>
+     *         otherwise
+     */
+    public Boolean inrange(User user, Integer range) {
+        Double dist = this.distance(Double.valueOf(user.getLatitude()),
+                Double.valueOf(user.getLongitude()));
         return (dist <= range);
     }
 
@@ -152,7 +154,4 @@ public class User {
         }
     }
 
-    public void setId(String id) {
-        this._id = id;
-    }
 }

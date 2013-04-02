@@ -1,10 +1,13 @@
 package fr.ups.carpooling.services;
 
-import javax.xml.parsers.ParserConfigurationException;
+import static org.springframework.ws.test.server.RequestCreators.withPayload;
+import static org.springframework.ws.test.server.ResponseMatchers.payload;
+
+import java.util.List;
+
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
-import fr.ups.carpooling.domain.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,10 +20,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.ws.test.server.MockWebServiceClient;
 
-import java.util.List;
-
-import static org.springframework.ws.test.server.RequestCreators.withPayload;
-import static org.springframework.ws.test.server.ResponseMatchers.payload;
+import fr.ups.carpooling.domain.User;
 
 /**
  * @author Kevin ANATOLE
@@ -35,55 +35,53 @@ public class LocalisationEndpointIntegrationTest {
 
     private MockWebServiceClient mockClient;
 
-    private RegistrationServiceImpl rs=new RegistrationServiceImpl();
+    private RegistrationServiceImpl rs = new RegistrationServiceImpl();
 
     @Before
-    public void createClient() {
+    public void createClient() throws Exception {
         mockClient = MockWebServiceClient.createClient(applicationContext);
-        //Initialisation de la base de données
+
+        // Initialize the database.
         CouchDbClient dbClient = new CouchDbClient();
-        View users =dbClient.view("application/viewusers");
+        View users = dbClient.view("application/viewusers");
         users.includeDocs(true);
         List<User> potentialneighbours = users.query(User.class);
-        for(User voisin : potentialneighbours)
-        {
+        for (User voisin : potentialneighbours) {
             dbClient.remove(voisin);
         }
-        User tempuser = new User("DURBAN","Romain","durban.romain@univ-tlse3.fr","Allée des sciences appliquées",31100,"Toulouse");
+
+        // User 1.
+        User tempuser = new User("Durban", "Romain",
+                "romain.durban@univ-tlse3.fr", "Allee des sciences appliquees",
+                31100, "Toulouse");
         tempuser.setId("1");
-        try {
-            rs.register(tempuser);
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-        tempuser = new User("Bitard","Romain","bitard.romain@univ-tlse3.fr","rue des capitouls",31650,"saint-orens de gameville");
+        rs.register(tempuser);
+
+        // User 2.
+        tempuser = new User("Bitard", "Romain", "romain.bitard@univ-tlse3.fr",
+                "rue des capitouls", 31650, "saint-orens de gameville");
         tempuser.setId("2");
-        try {
-            rs.register(tempuser);
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-        tempuser = new User("SYLVESTRE","Franck","sylvestre.franck@univ-tlse3.fr","118 route de Narbonne",31520,"Toulouse");
+        rs.register(tempuser);
+
+        // User 3.
+        tempuser = new User("Silvestre", "Franck",
+                "franck.silvestre@univ-tlse3.fr", "118 route de Narbonne",
+                31520, "Toulouse");
         tempuser.setId("3");
-        try {
-            rs.register(tempuser);
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-        tempuser = new User("MASSIE","Henry","massie.henry@univ-tlse3.fr","rue rue sylvain dauriac",31506,"Toulouse");
+        rs.register(tempuser);
+
+        // User 4.
+        tempuser = new User("Massie", "Henry", "henry.massie@univ-tlse3.fr",
+                "rue sylvain dauriac", 31506, "Toulouse");
         tempuser.setId("4");
-        try {
-            rs.register(tempuser);
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-        tempuser = new User("CHERBONNAUD","Bernard","cherbonneau.bernard@univ-tlse3.fr","rue d'alger",31500,"Toulouse");
+        rs.register(tempuser);
+
+        // User 5.
+        tempuser = new User("Cherbonnaud", "Bernard",
+                "bernard.cherbonneau@univ-tlse3.fr", "rue d'alger", 31500,
+                "Toulouse");
         tempuser.setId("5");
-        try {
-            rs.register(tempuser);
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
+        rs.register(tempuser);
     }
 
     @Test
@@ -96,4 +94,5 @@ public class LocalisationEndpointIntegrationTest {
         mockClient.sendRequest(withPayload(requestPayload)).andExpect(
                 payload(responsePayload));
     }
+    
 }

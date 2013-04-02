@@ -1,18 +1,11 @@
 package fr.ups.carpooling.services;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 import org.lightcouch.CouchDbClient;
 import org.lightcouch.View;
@@ -22,40 +15,67 @@ import org.w3c.dom.Element;
 import fr.ups.carpooling.domain.User;
 import fr.ups.carpooling.domain.constants.Constants;
 
+/**
+ * @author Kevin ANATOLE
+ * @author Damien ARONDEL
+ */
 public class LocalisationServiceImpl implements LocalisationService {
 
-    private Document document;
-    private User current;
-    private Integer userID;
-    private Integer radiusKM;
+    /**
+     * CouchDB Client.
+     */
     private CouchDbClient dbClient;
+
+    /**
+     * XML document.
+     */
+    private Document document;
+
+    /**
+     * User looking for possible neighbours.
+     */
+    private User current;
+
+    /**
+     * User ID.
+     */
+    private Integer userID;
+
+    /**
+     * Radius in kilometers.
+     */
+    private Integer radiusKM;
 
     public Element searchForNeighbours(Integer userID, Integer radiusKM)
             throws ParserConfigurationException {
+        // Complete neighbours.
         List<User> neighbours = new ArrayList<User>();
-        List<User> potentialneighbours= new ArrayList<User>();
+        List<User> potentialneighbours = new ArrayList<User>();
         this.userID = userID;
         this.radiusKM = radiusKM;
-        dbClient =new CouchDbClient();
-        current=dbClient.find(User.class,Integer.toString(userID));
-        View users =dbClient.view("application/viewusers");
+        dbClient = new CouchDbClient();
+        current = dbClient.find(User.class, Integer.toString(userID));
+        View users = dbClient.view("application/viewusers");
         users.includeDocs(true);
         potentialneighbours = users.query(User.class);
-        for(User voisin : potentialneighbours)
-        {
-            if(current.inrange(voisin,radiusKM) && (!current.equals(voisin)))
-            {
+        for (User voisin : potentialneighbours) {
+            if (current.inrange(voisin, radiusKM) && (!current.equals(voisin))) {
                 neighbours.add(voisin);
             }
         }
-
-        // Complete neighbours.
-        // ... Met ton code l�!
 
         // Return the response.
         return createResponse(neighbours);
     }
 
+    /**
+     * Create the response of the localisation service.
+     * 
+     * @param neighbours
+     *            the neighbours of the current user (may be empty)
+     * @return the XML element completed
+     * @throws ParserConfigurationException
+     */
     private Element createResponse(List<User> neighbours)
             throws ParserConfigurationException {
         // Create a new DOM.
@@ -80,30 +100,17 @@ public class LocalisationServiceImpl implements LocalisationService {
             Element user = createUser(neighbour);
             root.appendChild(user);
         }
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        Transformer transformer = null;
-        try {
-            transformer = transformerFactory.newTransformer();
-        } catch (TransformerConfigurationException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-        DOMSource source = new DOMSource(document);
-        StreamResult result = new StreamResult(new File("file.xml"));
-
-        // Output to console for testing
-        // StreamResult result = new StreamResult(System.out);
-
-        try {
-            transformer.transform(source, result);
-        } catch (TransformerException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-
-        System.out.println("File saved!");
 
         return document.getDocumentElement();
     }
 
+    /**
+     * Create a user in XML format.
+     * 
+     * @param user
+     *            the user to create
+     * @return the XML element containing the user
+     */
     private Element createUser(User user) {
         Element root = document.createElement("User");
 
